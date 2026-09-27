@@ -13,8 +13,8 @@ export default async function middleware(req: NextRequest) {
 
   // Handles requests on the admin subdomain
   if (isAdminSubdomain) {
-    // Allow API routes to pass through directly
-    if (pathname.startsWith('/api')) {
+    // Allow API and Next.js internal static/data routes to pass through directly
+    if (pathname.startsWith('/api') || pathname.startsWith('/_next')) {
       return NextResponse.next();
     }
 
