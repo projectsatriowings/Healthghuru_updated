@@ -10,10 +10,12 @@ export default function ConditionalLayout({
   children,
   navbar,
   footer,
+  isExcluded: serverIsExcluded = false,
 }: {
   children: React.ReactNode;
   navbar: React.ReactNode;
   footer: React.ReactNode;
+  isExcluded?: boolean;
 }) {
   const pathname = usePathname();
   const [isAdminDomain, setIsAdminDomain] = useState(false);
@@ -24,8 +26,8 @@ export default function ConditionalLayout({
     }
   }, []);
 
-  // Hide site navbar/footer and ads within the Admin console or on print routes or admin subdomain
-  const isExcluded = isAdminDomain || pathname?.startsWith('/admin') || pathname?.includes('/print');
+  // Hide site navbar/footer and ads within the Admin console, on admin subdomain, or on print routes
+  const isExcluded = serverIsExcluded || isAdminDomain || pathname?.startsWith('/admin') || pathname?.includes('/print');
 
   return (
     <>
@@ -40,4 +42,5 @@ export default function ConditionalLayout({
     </>
   );
 }
+
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Plus_Jakarta_Sans, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
@@ -60,6 +61,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = headers();
+  const host = headersList.get("x-host") || headersList.get("host") || "";
+  const pathname = headersList.get("x-pathname") || "";
+  const isAdminDomain = host.startsWith("admin.") || headersList.get("x-is-admin-domain") === "true";
+  const isExcluded = isAdminDomain || pathname.startsWith("/admin") || pathname.includes("/print");
+
   return (
     <html lang="en" suppressHydrationWarning className={`${plusJakartaDisplay.variable} ${plusJakarta.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
       <body suppressHydrationWarning className="antialiased min-h-screen flex flex-col font-body">
@@ -68,7 +75,7 @@ export default function RootLayout({
             <ToastProvider>
               <DialogProvider>
                 <SmoothScroll>
-                  <ConditionalLayout navbar={<Navbar />} footer={<Footer />}>
+                  <ConditionalLayout isExcluded={isExcluded} navbar={<Navbar />} footer={<Footer />}>
                     {children}
                   </ConditionalLayout>
                 </SmoothScroll>

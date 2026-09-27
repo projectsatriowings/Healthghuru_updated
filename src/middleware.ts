@@ -11,11 +11,18 @@ export default async function middleware(req: NextRequest) {
   const isAdminSubdomain = host.startsWith('admin.');
   const pathname = nextUrl.pathname;
 
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set('x-host', host);
+  requestHeaders.set('x-pathname', pathname);
+  if (isAdminSubdomain) {
+    requestHeaders.set('x-is-admin-domain', 'true');
+  }
+
   // Handles requests on the admin subdomain
   if (isAdminSubdomain) {
     // Allow API and Next.js internal static/data routes to pass through directly
     if (pathname.startsWith('/api') || pathname.startsWith('/_next')) {
-      return NextResponse.next();
+      return NextResponse.next({ request: { headers: requestHeaders } });
     }
 
     // Rewrite requests to /admin path internally if they don't already start with /admin
@@ -34,7 +41,7 @@ export default async function middleware(req: NextRequest) {
         }
       }
 
-      return NextResponse.rewrite(rewriteUrl);
+      return NextResponse.rewrite(rewriteUrl, { request: { headers: requestHeaders } });
     }
   }
 
@@ -50,7 +57,7 @@ export default async function middleware(req: NextRequest) {
     }
   }
 
-  return NextResponse.next();
+  return NextResponse.next({ request: { headers: requestHeaders } });
 }
 
 export const config = {
