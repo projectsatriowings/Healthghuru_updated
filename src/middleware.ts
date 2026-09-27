@@ -13,6 +13,11 @@ export default async function middleware(req: NextRequest) {
 
   // Handles requests on the admin subdomain
   if (isAdminSubdomain) {
+    // Allow API routes to pass through directly
+    if (pathname.startsWith('/api')) {
+      return NextResponse.next();
+    }
+
     // Rewrite requests to /admin path internally if they don't already start with /admin
     if (!pathname.startsWith('/admin')) {
       const targetPath = `/admin${pathname === '/' ? '' : pathname}`;
