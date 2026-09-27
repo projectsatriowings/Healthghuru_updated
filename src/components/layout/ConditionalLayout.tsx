@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { FloatingFooterAd } from "@/components/ads/FloatingFooterAd";
 import { PopupAdModal } from "@/components/ads/PopupAdModal";
 import { AuthModal } from "@/components/auth/AuthModal";
@@ -15,9 +16,16 @@ export default function ConditionalLayout({
   footer: React.ReactNode;
 }) {
   const pathname = usePathname();
-  
-  // Hide site navbar/footer and ads within the Admin console or on print routes
-  const isExcluded = pathname?.startsWith('/admin') || pathname?.includes('/print');
+  const [isAdminDomain, setIsAdminDomain] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.hostname.startsWith("admin.")) {
+      setIsAdminDomain(true);
+    }
+  }, []);
+
+  // Hide site navbar/footer and ads within the Admin console or on print routes or admin subdomain
+  const isExcluded = isAdminDomain || pathname?.startsWith('/admin') || pathname?.includes('/print');
 
   return (
     <>
@@ -32,3 +40,4 @@ export default function ConditionalLayout({
     </>
   );
 }
+
