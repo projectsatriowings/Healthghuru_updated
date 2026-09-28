@@ -192,7 +192,7 @@ export function NavbarHeaderAd({ isMobile = false }: NavbarHeaderAdProps) {
           </div>
 
           <div className="flex items-center gap-1 shrink-0">
-            <span className="bg-gradient-to-r from-[#f06d2f] to-[#ff8a57] text-white text-[9.5px] sm:text-[10px] font-heading font-bold px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg shadow-sm inline-flex items-center gap-1">
+            <span className="bg-gradient-to-r from-[#f06d2f] to-[#ff8a57] text-white text-[9.5px] sm:text-[10px] font-heading font-bold px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg shadow-sm inline-flex items-center gap-1 whitespace-nowrap">
               <span>{currentAd.cta_text || 'Explore'}</span>
               <ArrowRight size={10} />
             </span>
@@ -202,25 +202,25 @@ export function NavbarHeaderAd({ isMobile = false }: NavbarHeaderAdProps) {
     );
   }
 
-  // DESKTOP VERSION (lg+)
+  // DESKTOP VERSION (xl+)
   return (
     <div
-      className="hidden lg:flex flex-1 items-center justify-center max-w-2xl xl:max-w-3xl px-2"
+      className="hidden xl:flex flex-1 items-center justify-center min-w-0 max-w-xl 2xl:max-w-2xl px-2"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      <div className="w-full relative">
+      <div className="w-full relative min-w-0">
         <a
           href={currentAd.target_url || '#'}
           target={currentAd.target_url?.startsWith('http') ? '_blank' : '_self'}
           rel={currentAd.target_url?.startsWith('http') ? 'noopener noreferrer' : undefined}
           onClick={handleClick}
-          className={`w-full bg-slate-900 text-white rounded-xl p-2.5 px-4 flex items-center justify-between gap-4 group transition-all duration-300 shadow-sm hover:shadow-md border border-slate-800 hover:border-slate-700 ${
+          className={`w-full bg-slate-900 text-white rounded-xl p-2.5 px-3.5 sm:px-4 flex items-center justify-between gap-3 sm:gap-4 group transition-all duration-300 shadow-sm hover:shadow-md border border-slate-800 hover:border-slate-700 overflow-hidden ${
             fade ? 'opacity-100 scale-100' : 'opacity-0 scale-[0.99]'
           }`}
         >
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="relative w-12 h-12 rounded-lg overflow-hidden shrink-0 border border-emerald-400/30 bg-white/5">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div className="relative w-11 h-11 sm:w-12 sm:h-12 rounded-lg overflow-hidden shrink-0 border border-emerald-400/30 bg-white/5">
               {currentAd.image_url ? (
                 <Image
                   src={getSafeImageUrl(currentAd.image_url, 'advertisement')}
@@ -236,24 +236,24 @@ export function NavbarHeaderAd({ isMobile = false }: NavbarHeaderAdProps) {
                 </div>
               )}
             </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-[9px] font-mono uppercase tracking-wider font-bold bg-[#f06d2f] text-white px-1.5 py-0.5 rounded">
-                  ADVERTISEMENT
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 leading-none">
+                <span className="text-[9px] font-mono uppercase tracking-wider font-bold bg-[#f06d2f] text-white px-1.5 py-0.5 rounded shrink-0">
+                  SPONSORED
                 </span>
                 <span className="text-xs font-bold text-amber-300 truncate">
                   {currentAd.advertiser_name || currentAd.title}
                 </span>
               </div>
-              <p className="text-xs font-heading font-semibold text-white group-hover:text-emerald-300 truncate mt-0.5">
+              <p className="text-xs font-heading font-semibold text-white group-hover:text-emerald-300 truncate mt-1">
                 {currentAd.headline || currentAd.title}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
             {ads.length > 1 && (
-              <div className="flex items-center gap-1 bg-black/40 px-2 py-1 rounded-full">
+              <div className="hidden 2xl:flex items-center gap-1 bg-black/40 px-2 py-1 rounded-full">
                 {ads.map((_, idx) => (
                   <button
                     key={idx}
@@ -272,7 +272,7 @@ export function NavbarHeaderAd({ isMobile = false }: NavbarHeaderAdProps) {
               </div>
             )}
 
-            <span className="bg-gradient-to-r from-[#f06d2f] to-[#ff8a57] text-white text-xs font-bold px-3.5 py-2 rounded-lg group-hover:brightness-110 shadow-sm inline-flex items-center gap-1">
+            <span className="bg-gradient-to-r from-[#f06d2f] to-[#ff8a57] text-white text-xs font-bold px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg group-hover:brightness-110 shadow-sm inline-flex items-center gap-1 whitespace-nowrap">
               <span>{currentAd.cta_text || 'Explore'}</span>
               <ArrowRight size={12} />
             </span>

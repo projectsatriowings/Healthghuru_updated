@@ -195,53 +195,53 @@ export default function Navbar() {
       <div className="max-w-7xl xl:max-w-[1440px] 2xl:max-w-[1600px] mx-auto px-2 sm:px-6 lg:px-8 py-2.5 sm:py-3.5">
         <div className="flex items-center justify-between gap-1 sm:gap-4">
           {/* Left: Hamburger + Logo */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2.5 shrink-0">
             {/* Hamburger Button */}
             <button
               onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
-              className="!min-w-0 !min-h-0 w-7.5 h-7.5 sm:w-8 sm:h-8 flex items-center justify-center p-0 text-slate-800 hover:text-[#16A34A] hover:bg-emerald-50 rounded-lg transition-all active:scale-95 focus:outline-none shrink-0"
+              className="!min-w-0 !min-h-0 w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center p-0 text-slate-800 hover:text-[#16A34A] hover:bg-emerald-50 rounded-lg transition-all active:scale-95 focus:outline-none shrink-0"
               aria-label="Toggle Navigation Menu"
             >
-              <Menu size={20} className="sm:w-[26px] sm:h-[26px]" />
+              <Menu size={18} className="sm:w-[26px] sm:h-[26px]" />
             </button>
 
             {/* HealthGhuru Logo + Tagline */}
-            <Link href="/" className="flex items-center gap-2 sm:gap-3 group shrink-0">
-              <div className="relative w-11 h-11 sm:w-14 sm:h-14 lg:w-16 lg:h-16 xl:w-[70px] xl:h-[70px] shrink-0 transition-transform group-hover:scale-105 duration-300">
+            <Link href="/" className="flex items-center gap-1.5 sm:gap-3 group shrink-0">
+              <div className="relative w-8 h-8 xs:w-9 xs:h-9 sm:w-14 sm:h-14 lg:w-16 lg:h-16 xl:w-[70px] xl:h-[70px] shrink-0 transition-transform group-hover:scale-105 duration-300">
                 <Image
                   src="/images/logo_transparent.png"
                   alt="HealthGhuru Logo"
                   fill
-                  sizes="(max-width: 640px) 44px, (max-width: 768px) 56px, (max-width: 1024px) 64px, 70px"
+                  sizes="(max-width: 420px) 32px, (max-width: 640px) 36px, (max-width: 768px) 56px, (max-width: 1024px) 64px, 70px"
                   className="object-contain"
                   priority
                 />
               </div>
               <div className="flex flex-col justify-center">
-                <span className="font-display text-lg sm:text-2xl md:text-3xl lg:text-[34px] font-black tracking-tight text-[#16A34A] group-hover:text-[#15803D] transition-colors leading-none whitespace-nowrap">
+                <span className="font-display text-[15px] xs:text-lg sm:text-2xl md:text-3xl lg:text-[34px] font-black tracking-tight text-[#16A34A] group-hover:text-[#15803D] transition-colors leading-none whitespace-nowrap">
                   HEALTH<span className="text-[#f06d2f]">GHURU</span>
                 </span>
-                <span className="text-[10px] sm:text-xs lg:text-[12.5px] font-heading font-bold text-emerald-800 tracking-wide mt-1 hidden xs:block whitespace-nowrap">
+                <span className="text-[10px] sm:text-xs lg:text-[12.5px] font-heading font-bold text-emerald-800 tracking-wide mt-1 hidden lg:block whitespace-nowrap">
                   Live Better. Feel Stronger. Every Day.
                 </span>
               </div>
             </Link>
           </div>
 
-          {/* Center: Dynamic High-Impact Leaderboard Sponsor Banner (Desktop only) */}
-          <div className="hidden lg:contents">
+          {/* Center: Dynamic High-Impact Leaderboard Sponsor Banner (Desktop xl+ only) */}
+          <div className="hidden xl:contents">
             <NavbarHeaderAd />
           </div>
 
           {/* Right: Search, Notification Bell, User Avatar, Login & Subscribe */}
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             {/* Search Trigger */}
             <button
               onClick={() => setSearchOpen(!searchOpen)}
-              className="!min-w-0 !min-h-0 w-7.5 h-7.5 sm:w-8 sm:h-8 flex items-center justify-center p-0 text-slate-700 hover:text-[#f06d2f] hover:bg-orange-50/80 rounded-full transition-all active:scale-95 shrink-0"
+              className="!min-w-0 !min-h-0 w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center p-0 text-slate-700 hover:text-[#f06d2f] hover:bg-orange-50/80 rounded-full transition-all active:scale-95 shrink-0"
               aria-label="Search Health News"
             >
-              <Search size={16} className="sm:w-5 sm:h-5" />
+              <Search size={15} className="sm:w-5 sm:h-5" />
             </button>
 
             {/* Health Alerts & Notifications Bell */}
@@ -333,16 +333,16 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => openLoginModal({ initialMode: "signin" })}
-                className="!min-w-0 !min-h-0 w-7.5 h-7.5 sm:w-auto sm:h-8.5 sm:px-3 text-slate-800 hover:text-slate-950 bg-slate-100 hover:bg-slate-200 border border-slate-300/80 rounded-full transition-all inline-flex items-center justify-center gap-1.5 cursor-pointer shrink-0 shadow-2xs whitespace-nowrap active:scale-95"
+                className="!min-w-0 !min-h-0 w-7 h-7 sm:w-auto sm:h-8.5 sm:px-3 text-slate-800 hover:text-slate-950 bg-slate-100 hover:bg-slate-200 border border-slate-300/80 rounded-full transition-all inline-flex items-center justify-center gap-1.5 cursor-pointer shrink-0 shadow-2xs whitespace-nowrap active:scale-95"
                 aria-label="Sign in"
                 title="Sign in"
               >
-                <LogIn size={13.5} className="text-slate-700 sm:w-3.5 sm:h-3.5 shrink-0" />
+                <LogIn size={13} className="text-slate-700 sm:w-3.5 sm:h-3.5 shrink-0" />
                 <span className="hidden sm:inline text-xs font-heading font-bold">Sign In</span>
               </button>
             )}
 
-            {/* Start Advertising Button (Auth Protected) - Shown on tablet/desktop, hidden on phone to avoid overflow */}
+            {/* Start Advertising Button (Auth Protected) - Shown on desktop 2xl+, hidden on mobile & tablets to avoid overflow */}
             <button
               type="button"
               onClick={() => {
@@ -352,7 +352,7 @@ export default function Navbar() {
                     'Sign in or register your medical organization to launch, book, and manage ad campaigns on HealthGhuru.',
                 });
               }}
-              className="hidden md:inline-flex bg-gradient-to-r from-[#f06d2f] to-[#ea580c] hover:from-[#e05a1b] hover:to-[#c2410c] text-white text-xs sm:text-sm font-heading font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg shadow-sm hover:shadow-md hover:scale-[1.03] active:scale-[0.97] transition-all items-center gap-1.5 cursor-pointer"
+              className="hidden 2xl:inline-flex bg-gradient-to-r from-[#f06d2f] to-[#ea580c] hover:from-[#e05a1b] hover:to-[#c2410c] text-white text-xs sm:text-sm font-heading font-bold px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg shadow-sm hover:shadow-md hover:scale-[1.03] active:scale-[0.97] transition-all items-center gap-1.5 cursor-pointer"
             >
               <Megaphone size={14} className="text-orange-200" />
               <span>Advertise With Us</span>
@@ -362,15 +362,15 @@ export default function Navbar() {
             {isSubscribed ? (
               <Link
                 href="/account"
-                className="!min-w-0 !min-h-0 h-7.5 sm:h-8.5 bg-[#022c22] hover:bg-[#033b2e] text-emerald-100 text-[10px] sm:text-xs md:text-sm font-heading font-bold px-2.5 sm:px-3.5 rounded-full shadow-xs hover:shadow-md hover:scale-[1.03] active:scale-[0.97] transition-all inline-flex items-center gap-1 sm:gap-1.5 shrink-0 whitespace-nowrap cursor-pointer touch-manipulation border border-emerald-600/50"
+                className="!min-w-0 !min-h-0 h-7 sm:h-8.5 bg-[#022c22] hover:bg-[#033b2e] text-emerald-100 text-[9.5px] xs:text-[10px] sm:text-xs md:text-sm font-heading font-bold px-2 xs:px-2.5 sm:px-3.5 rounded-full shadow-xs hover:shadow-md hover:scale-[1.03] active:scale-[0.97] transition-all inline-flex items-center gap-1 sm:gap-1.5 shrink-0 whitespace-nowrap cursor-pointer touch-manipulation border border-emerald-600/50"
               >
-                <Sparkles size={11} className="text-amber-300 animate-spin sm:w-3.5 sm:h-3.5 pointer-events-none" style={{ animationDuration: '6s' }} />
+                <Sparkles size={10} className="text-amber-300 animate-spin sm:w-3.5 sm:h-3.5 pointer-events-none" style={{ animationDuration: '6s' }} />
                 <span className="pointer-events-none">VIP<span className="hidden sm:inline"> Member</span></span>
               </Link>
             ) : (
               <Link
                 href="/subscribe"
-                className="relative group overflow-hidden !min-w-0 !min-h-0 h-7.5 sm:h-8.5 inline-flex items-center gap-1.5 px-3 sm:px-3.5 md:px-4 rounded-full font-heading font-black text-[10.5px] sm:text-xs md:text-sm text-white bg-[#022c22] hover:bg-[#033b2e] shadow-sm shadow-emerald-950/60 hover:scale-[1.03] active:scale-[0.97] transition-all shrink-0 border border-emerald-500/60 whitespace-nowrap cursor-pointer touch-manipulation"
+                className="relative group overflow-hidden !min-w-0 !min-h-0 h-7 sm:h-8.5 inline-flex items-center gap-1 sm:gap-1.5 px-2 xs:px-2.5 sm:px-3.5 md:px-4 rounded-full font-heading font-black text-[9.5px] xs:text-[10px] sm:text-xs md:text-sm text-white bg-[#022c22] hover:bg-[#033b2e] shadow-sm shadow-emerald-950/60 hover:scale-[1.03] active:scale-[0.97] transition-all shrink-0 border border-emerald-500/60 whitespace-nowrap cursor-pointer touch-manipulation"
               >
                 {/* 1. Subtle Dark Emerald Pulsing Aura Halo */}
                 <span className="absolute -inset-0.5 rounded-full bg-emerald-500/25 blur-xs animate-pulse pointer-events-none" />
@@ -385,7 +385,7 @@ export default function Navbar() {
                 </span>
 
                 {/* 4. Text - Clearly visible in crisp white font */}
-                <span className="tracking-wider uppercase font-black text-[10.5px] sm:text-xs md:text-sm whitespace-nowrap pointer-events-none text-white drop-shadow-sm">
+                <span className="tracking-wide uppercase font-black text-[9.5px] xs:text-[10px] sm:text-xs md:text-sm whitespace-nowrap pointer-events-none text-white drop-shadow-sm">
                   Subscribe
                 </span>
 
@@ -397,8 +397,8 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Advertisement Banner (< lg) */}
-      <div className="block lg:hidden w-full px-2.5 sm:px-4 pb-2 pt-0.5 bg-white border-b border-gray-100/70">
+      {/* Mobile/Tablet/Mid-screen Advertisement Banner (< xl) */}
+      <div className="block xl:hidden w-full px-2.5 sm:px-4 pb-2 pt-0.5 bg-white border-b border-gray-100/70">
         <NavbarHeaderAd isMobile />
       </div>
 
@@ -786,7 +786,7 @@ export default function Navbar() {
           />
 
           {/* Drawer Content with slide-in from left */}
-          <div className="relative w-full max-w-[325px] xs:max-w-sm bg-white h-full overflow-y-auto z-10 shadow-2xl flex flex-col animate-in slide-in-from-left duration-300">
+          <div className="relative w-full max-w-[calc(100vw-36px)] xs:max-w-sm bg-white h-full overflow-y-auto z-10 shadow-2xl flex flex-col animate-in slide-in-from-left duration-300">
             {/* Sticky Compact Drawer Header */}
             <div className="sticky top-0 bg-white/95 backdrop-blur-md px-3.5 py-2.5 border-b border-gray-100 z-20 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2.5">

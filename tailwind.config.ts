@@ -116,6 +116,7 @@ const config: Config = {
         "btn": "9999px",
       },
       screens: {
+        xs: "420px",
         "3xl": "1920px",
         "4xl": "2560px",
       },

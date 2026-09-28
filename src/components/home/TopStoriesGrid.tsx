@@ -84,11 +84,11 @@ export function TopStoriesGrid({
           <div className="absolute bottom-0 left-0 right-0 h-[3.5px] bg-gradient-to-r from-[#16A34A] via-[#22C55E] to-[#f06d2f] rounded-full shadow-xs" />
         </div>
 
-        {/* 3-Column Desktop News Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+        {/* 3-Column Desktop News Grid / 2-Column Tablet Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           
-          {/* LEFT COLUMN (Cols 1-6): Large Featured Hero Story + 2 Sub-Story Briefs */}
-          <div className="lg:col-span-6 flex flex-col">
+          {/* LEFT COLUMN (Cols 1-6 Desktop / Full Width on Tablet): Large Featured Hero Story + 2 Sub-Story Briefs */}
+          <div className="md:col-span-2 lg:col-span-6 flex flex-col">
             {/* HERO BREAKING / TOP STORY CARD (Format matched to Image 1) */}
             <Link
               href={`/article/${targetSlug}`}
@@ -217,8 +217,8 @@ export function TopStoriesGrid({
             )}
           </div>
 
-          {/* MIDDLE COLUMN (Cols 7-9): Top Stories List with Lush Emerald Gradient Header */}
-          <div className="lg:col-span-3 flex flex-col bg-white rounded-2xl overflow-hidden border-2 border-emerald-500/30 shadow-md shadow-emerald-950/5 hover:shadow-lg transition-shadow">
+          {/* MIDDLE COLUMN (Cols 7-9 Desktop / 1 Col Tablet): Top Stories List with Lush Emerald Gradient Header */}
+          <div className="md:col-span-1 lg:col-span-3 flex flex-col bg-white rounded-2xl overflow-hidden border-2 border-emerald-500/30 shadow-md shadow-emerald-950/5 hover:shadow-lg transition-shadow">
             {/* Lush Emerald Header Banner */}
             <div className="bg-gradient-to-r from-[#16A34A] via-[#15803D] to-[#0D5C3A] text-white px-4 py-3 flex items-center justify-between shadow-xs">
               <div className="flex items-center gap-2">
@@ -278,8 +278,8 @@ export function TopStoriesGrid({
           </div>
 
 
-          {/* RIGHT COLUMN (Cols 9-12): TRENDING 🔥 with Fiery Sunset Orange Gradient Header */}
-          <div className="lg:col-span-3 flex flex-col bg-white text-slate-900 rounded-2xl overflow-hidden shadow-md shadow-orange-950/5 border-2 border-orange-500/30 hover:shadow-lg transition-shadow">
+          {/* RIGHT COLUMN (Cols 9-12 Desktop / 1 Col Tablet): TRENDING 🔥 with Fiery Sunset Orange Gradient Header */}
+          <div className="md:col-span-1 lg:col-span-3 flex flex-col bg-white text-slate-900 rounded-2xl overflow-hidden shadow-md shadow-orange-950/5 border-2 border-orange-500/30 hover:shadow-lg transition-shadow">
             {/* Fiery Sunset Header Banner */}
             <div className="bg-gradient-to-r from-[#ea580c] via-[#f06d2f] to-[#f59e0b] text-white px-4 py-3 flex items-center justify-between shadow-xs">
               <div className="flex items-center gap-2">
