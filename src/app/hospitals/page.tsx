@@ -97,7 +97,9 @@ export default async function HospitalsPage() {
                     <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2">
                         <h2 className="font-heading font-extrabold text-xl sm:text-2xl text-[#1A2E1A]">
-                          {hosp.name}
+                          <Link href={`/hospitals/${hosp.slug}`} className="hover:text-[#16A34A] transition-colors">
+                            {hosp.name}
+                          </Link>
                         </h2>
                         {hosp.is_verified && (
                           <span className="bg-[#1B5E20] text-white text-[9px] font-mono px-2 py-0.5 rounded flex items-center gap-1">
@@ -175,13 +177,21 @@ export default async function HospitalsPage() {
                       )}
                     </div>
 
-                    <Link
-                      href={`/doctors`}
-                      className="inline-flex items-center gap-1.5 font-heading font-bold text-xs bg-[#1B5E20] hover:bg-[#2E7D32] text-white px-4 py-2 rounded-xl transition-all shadow-xs"
-                    >
-                      <span>View Affiliated Doctors</span>
-                      <ArrowRight size={13} />
-                    </Link>
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={`/hospitals/${hosp.slug}`}
+                        className="inline-flex items-center gap-1.5 font-heading font-bold text-xs bg-[#16A34A] hover:bg-[#15803d] text-white px-4 py-2 rounded-xl transition-all shadow-xs"
+                      >
+                        <span>View Profile</span>
+                        <ArrowRight size={13} />
+                      </Link>
+                      <Link
+                        href={`/doctors`}
+                        className="inline-flex items-center gap-1.5 font-heading font-semibold text-xs bg-[#F5FAF5] hover:bg-[#e7f3e7] text-[#1B5E20] border border-[#2E7D32]/20 px-3.5 py-2 rounded-xl transition-all"
+                      >
+                        <span>Doctors</span>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
