@@ -21,6 +21,8 @@ import {
 import { BreakingNewsTicker } from '@/components/media/BreakingNewsTicker';
 import { getSafeImageUrl } from '@/lib/utils';
 
+import { getFallbackArticle } from '@/lib/fallbackArticles';
+
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({
@@ -28,10 +30,11 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
+  const cleanSlug = decodeURIComponent(params.slug || '').trim().toLowerCase();
   const items = await sql`
     SELECT title, excerpt, description, image_url, category, author_name, published_at
     FROM content_items
-    WHERE slug = ${params.slug} AND status = 'published'
+    WHERE (LOWER(slug) = ${cleanSlug} OR slug = ${params.slug}) AND status = 'published'
     LIMIT 1
   `;
 
@@ -52,12 +55,30 @@ export async function generateMetadata({
 
   // Check fallback articles table
   const legacy = await sql`
-    SELECT title, excerpt, hero_image_url FROM articles WHERE slug = ${params.slug} LIMIT 1
+    SELECT title, excerpt, hero_image_url FROM articles 
+    WHERE LOWER(slug) = ${cleanSlug} OR slug = ${params.slug} 
+    LIMIT 1
   `;
   if (legacy.length > 0) {
     return {
       title: `${legacy[0].title} | HealthGhuru`,
       description: legacy[0].excerpt,
+    };
+  }
+
+  // Check fallback registry
+  const fb = getFallbackArticle(cleanSlug);
+  if (fb) {
+    return {
+      title: `${fb.title} | HealthGhuru News`,
+      description: fb.excerpt || fb.description,
+      openGraph: {
+        title: fb.title,
+        description: fb.excerpt,
+        images: fb.image_url ? [{ url: fb.image_url }] : [],
+        type: 'article',
+        publishedTime: fb.published_at,
+      },
     };
   }
 
@@ -69,17 +90,22 @@ export default async function ArticlePage({
 }: {
   params: { slug: string };
 }) {
+  const cleanSlug = decodeURIComponent(params.slug || '').trim().toLowerCase();
+
   // 1. Fetch main article from content_items or articles
   const [contentItems, legacyArticles, breakingRes] = await Promise.all([
     sql`
       SELECT i.*, s.name as source_name
       FROM content_items i
       LEFT JOIN content_sources s ON i.source_id = s.id
-      WHERE i.slug = ${params.slug} AND i.status = 'published' AND i.deleted_at IS NULL
+      WHERE (LOWER(i.slug) = ${cleanSlug} OR i.slug = ${params.slug}) 
+        AND i.status = 'published' AND i.deleted_at IS NULL
       LIMIT 1
     `,
     sql`
-      SELECT * FROM articles WHERE slug = ${params.slug} LIMIT 1
+      SELECT * FROM articles 
+      WHERE LOWER(slug) = ${cleanSlug} OR slug = ${params.slug} 
+      LIMIT 1
     `,
     sql`
       SELECT id, title, slug, category, canonical_url, is_external
@@ -123,10 +149,18 @@ export default async function ArticlePage({
       quality_score: 9.5,
       raw_metadata: {},
     };
-  }
-
-  if (!article) {
-    notFound();
+  } else {
+    // Graceful fallback to guarantee no 404 on mock/fallback/clinical stories
+    const fallback = getFallbackArticle(cleanSlug);
+    if (fallback) {
+      article = {
+        ...fallback,
+        blocks: null,
+        raw_metadata: {},
+      };
+    } else {
+      notFound();
+    }
   }
 
   // 2. Fetch related articles in same category
@@ -180,6 +214,11 @@ export default async function ArticlePage({
     }
   };
 
+  const cleanCategorySlug = (article.category || 'health')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '') || 'latest';
+
   return (
     <div className="w-full bg-surface min-h-screen">
       {/* JSON-LD Script */}
@@ -198,7 +237,7 @@ export default async function ArticlePage({
         <nav className="flex items-center gap-2 text-xs text-gray-500 font-heading mb-4">
           <Link href="/" className="hover:text-[#1B5E20]">Home</Link>
           <span>/</span>
-          <Link href={`/category/${article.category?.toLowerCase() || 'latest'}`} className="text-[#1B5E20] font-bold capitalize">
+          <Link href={`/category/${cleanCategorySlug}`} className="text-[#1B5E20] font-bold capitalize">
             {article.category || 'News'}
           </Link>
           <span>/</span>
@@ -213,9 +252,12 @@ export default async function ArticlePage({
             
             {/* Category Pill */}
             <div className="flex items-center gap-2 mb-3">
-              <span className="bg-[#1B5E20] text-white text-[11px] font-heading font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+              <Link 
+                href={`/category/${cleanCategorySlug}`} 
+                className="bg-[#1B5E20] hover:bg-[#144717] text-white text-[11px] font-heading font-extrabold px-3 py-1 rounded-full uppercase tracking-wider transition-colors inline-block"
+              >
                 {article.category || "HEALTH NEWS"}
-              </span>
+              </Link>
               {article.subcategory && (
                 <span className="text-xs font-mono font-semibold text-[#f06d2f]">
                   • {article.subcategory}

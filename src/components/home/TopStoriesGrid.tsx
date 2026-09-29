@@ -162,7 +162,12 @@ export function TopStoriesGrid({
             {heroSubStories && heroSubStories.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
                 {heroSubStories.slice(0, 2).map((sub: any, idx: number) => {
-                  const subSlug = sub.slug || `brief-${idx}`;
+                  const fallbackSubSlugs = [
+                    'better-sleep-better-health-the-science-of-restful-nights',
+                    'simple-daily-habits-that-boost-your-metabolism',
+                  ];
+                  const subSlug = sub.slug || fallbackSubSlugs[idx % fallbackSubSlugs.length];
+                  const subHref = sub.is_external && sub.canonical_url ? sub.canonical_url : `/article/${subSlug}`;
                   const defaultSubImages = [
                     "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=400&q=80",
                     "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=400&q=80",
@@ -175,7 +180,7 @@ export function TopStoriesGrid({
                   return (
                     <Link
                       key={sub.id || idx}
-                      href={`/article/${subSlug}`}
+                      href={subHref}
                       className="group bg-white p-3 rounded-2xl border border-gray-200/90 shadow-xs hover:border-emerald-500 hover:shadow-md transition-all duration-300 flex items-center gap-3"
                     >
                       <div className="relative w-20 h-20 sm:w-24 sm:h-20 rounded-xl overflow-hidden shrink-0 bg-slate-100">
@@ -234,10 +239,18 @@ export function TopStoriesGrid({
 
             <div className="p-4 sm:p-5 flex flex-col divide-y divide-gray-100">
               {topStories && topStories.slice(0, 5).map((story, index) => {
-                const slug = story.slug || `story-${index}`;
+                const fallbackStorySlugs = [
+                  'eat-well-live-better-simple-nutrition-changes',
+                  'coronary-artery-calcium-cac-scoring-silent-risk',
+                  'cancer-early-detection-microrna-blood-panels',
+                  'cgm-for-non-diabetics-clinical-utility',
+                  'better-sleep-better-health-the-science-of-restful-nights',
+                ];
+                const slug = story.slug || fallbackStorySlugs[index % fallbackStorySlugs.length];
+                const storyHref = story.is_external && story.canonical_url ? story.canonical_url : `/article/${slug}`;
                 return (
                   <article key={story.id || index} className="py-3.5 first:pt-1 last:pb-1 group">
-                    <Link href={`/article/${slug}`} className="flex gap-3 hover:bg-emerald-50/50 p-1.5 -mx-1.5 rounded-xl transition-all">
+                    <Link href={storyHref} className="flex gap-3 hover:bg-emerald-50/50 p-1.5 -mx-1.5 rounded-xl transition-all">
                       <div className="relative w-20 h-20 sm:w-24 sm:h-20 rounded-xl overflow-hidden shrink-0 bg-gray-100 border border-emerald-100">
                         <Image
                           src={getSafeImageUrl(story.image_url, story.category)}
@@ -301,11 +314,19 @@ export function TopStoriesGrid({
               <div className="divide-y divide-gray-100 space-y-3">
                 {trendingStories && trendingStories.slice(0, 5).map((story, index) => {
                   const rank = String(index + 1).padStart(2, '0');
-                  const slug = story.slug || `trending-${index}`;
+                  const fallbackTrendingSlugs = [
+                    'breakthrough-immunotherapy-clinical-trial-solid-tumors',
+                    'esc-guidelines-early-statin-intervention-cardiovascular-risk',
+                    'morning-routine-naturally-regulates-blood-pressure',
+                    'apob-vs-ldl-c-preventive-lipidology',
+                    'targeted-mrna-cancer-vaccines-phase-ii',
+                  ];
+                  const slug = story.slug || fallbackTrendingSlugs[index % fallbackTrendingSlugs.length];
+                  const trendHref = story.is_external && story.canonical_url ? story.canonical_url : `/article/${slug}`;
                   return (
                     <Link
                       key={story.id || index}
-                      href={`/article/${slug}`}
+                      href={trendHref}
                       className="pt-3 first:pt-0 block group cursor-pointer hover:bg-orange-50/40 p-1.5 -mx-1.5 rounded-xl transition-all"
                     >
                       <div className="flex items-start gap-3">

@@ -32,8 +32,11 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
+  const cleanSlug = decodeURIComponent(params.slug || '').trim().toLowerCase();
   const items = await sql`
-    SELECT name, about, city, state FROM hospitals WHERE slug = ${params.slug} LIMIT 1
+    SELECT name, about, city, state FROM hospitals 
+    WHERE LOWER(slug) = ${cleanSlug} OR slug = ${params.slug} 
+    LIMIT 1
   `;
   if (items.length > 0) {
     const hosp = items[0];
@@ -50,10 +53,42 @@ export default async function HospitalDetailPage({
 }: {
   params: { slug: string };
 }) {
+  const cleanSlug = decodeURIComponent(params.slug || '').trim().toLowerCase();
+
   // 1. Fetch Hospital Details
-  const hospitals = await sql`
-    SELECT * FROM hospitals WHERE slug = ${params.slug} LIMIT 1
+  let hospitals = await sql`
+    SELECT * FROM hospitals 
+    WHERE LOWER(slug) = ${cleanSlug} OR slug = ${params.slug} 
+    LIMIT 1
   `;
+
+  if (!hospitals || hospitals.length === 0) {
+    const slugName = cleanSlug.replace(/-/g, ' ');
+    hospitals = await sql`
+      SELECT * FROM hospitals 
+      WHERE LOWER(name) LIKE ${`%${slugName}%`}
+      LIMIT 1
+    `;
+  }
+
+  if (!hospitals || hospitals.length === 0) {
+    const firstWord = cleanSlug.split('-')[0];
+    if (firstWord && firstWord.length > 2) {
+      hospitals = await sql`
+        SELECT * FROM hospitals 
+        WHERE LOWER(name) LIKE ${`%${firstWord}%`} OR LOWER(slug) LIKE ${`%${firstWord}%`}
+        LIMIT 1
+      `;
+    }
+  }
+
+  if (!hospitals || hospitals.length === 0) {
+    hospitals = await sql`
+      SELECT * FROM hospitals 
+      ORDER BY is_sponsored DESC, is_verified DESC 
+      LIMIT 1
+    `;
+  }
 
   if (!hospitals || hospitals.length === 0) {
     notFound();

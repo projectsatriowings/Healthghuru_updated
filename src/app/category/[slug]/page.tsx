@@ -110,10 +110,13 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
+  const cleanSlug = decodeURIComponent(params.slug || '').trim().toLowerCase();
   const cats = await sql`
-    SELECT name, description FROM content_categories WHERE slug = ${params.slug} LIMIT 1
+    SELECT name, description FROM content_categories 
+    WHERE LOWER(slug) = ${cleanSlug} OR slug = ${params.slug} 
+    LIMIT 1
   `;
-  const name = cats.length > 0 ? cats[0].name : params.slug.replace(/-/g, ' ');
+  const name = cats.length > 0 ? cats[0].name : cleanSlug.replace(/-/g, ' ');
   return {
     title: `${name.toUpperCase()} News, Clinical Research & Updates | HealthGhuru`,
     description:
@@ -128,13 +131,26 @@ export default async function CategoryPage({
 }: {
   params: { slug: string };
 }) {
-  const catSlug = params.slug.toLowerCase();
-  const searchPattern = `%${catSlug
-    .replace('womens-health', 'women')
-    .replace('heart', 'heart')}%`;
+  const cleanSlug = decodeURIComponent(params.slug || '').trim().toLowerCase();
+  
+  // Normalize known category aliases
+  let normalizedKey = cleanSlug;
+  if (cleanSlug.includes('women')) normalizedKey = 'womens-health';
+  else if (cleanSlug.includes('heart') || cleanSlug.includes('cardio')) normalizedKey = 'heart';
+  else if (cleanSlug.includes('cancer') || cleanSlug.includes('oncol')) normalizedKey = 'cancer';
+  else if (cleanSlug.includes('diabet') || cleanSlug.includes('metabol')) normalizedKey = 'diabetes';
+  else if (cleanSlug.includes('pediatr') || cleanSlug.includes('child')) normalizedKey = 'pediatrics';
+  else if (cleanSlug.includes('mental') || cleanSlug.includes('brain') || cleanSlug.includes('psych')) normalizedKey = 'mental-health';
+  else if (cleanSlug.includes('nutrit') || cleanSlug.includes('diet') || cleanSlug.includes('food')) normalizedKey = 'nutrition';
+  else if (cleanSlug.includes('fit') || cleanSlug.includes('exercise')) normalizedKey = 'fitness';
+  else if (cleanSlug.includes('sleep')) normalizedKey = 'sleep';
+  else if (cleanSlug.includes('research') || cleanSlug.includes('clinical')) normalizedKey = 'research';
+
+  const searchKeyword = normalizedKey === 'womens-health' ? 'women' : normalizedKey.replace(/-/g, ' ');
+  const searchPattern = `%${searchKeyword.split(' ')[0]}%`;
 
   // Fetch Category Items
-  const [items, breakingRes, trendingRes] = await Promise.all([
+  let [items, breakingRes, trendingRes] = await Promise.all([
     sql`
       SELECT i.*, s.name as source_name
       FROM content_items i
@@ -160,20 +176,36 @@ export default async function CategoryPage({
     `,
   ]);
 
-  const categoryName = params.slug
+  // If specific category has no tagged items yet, load latest published items so the page renders richly
+  if (!items || items.length === 0) {
+    items = await sql`
+      SELECT i.*, s.name as source_name
+      FROM content_items i
+      LEFT JOIN content_sources s ON i.source_id = s.id
+      WHERE i.status = 'published' AND i.deleted_at IS NULL
+      ORDER BY i.published_at DESC
+      LIMIT 24
+    `;
+  }
+
+  const categoryName = cleanSlug
     .split('-')
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ');
 
-  const visualConfig = CATEGORY_VISUALS[params.slug.toLowerCase()] || {
-    image: '/images/glass_health_emblem.png',
-    orb1: 'from-emerald-200/50 via-teal-100/35 to-transparent',
-    orb2: 'from-amber-100/40 via-orange-100/25 to-transparent',
-    accentBar: 'from-emerald-500 to-[#f06d2f]',
-    badgeBorder: 'from-emerald-400/35 via-emerald-200/40 to-orange-300/30',
-  };
+  const visualConfig = CATEGORY_VISUALS[normalizedKey] || CATEGORY_VISUALS.fitness;
 
-  const featuredStory = items[0];
+  const featuredStory = items[0] || {
+    title: `${categoryName} Clinical Updates & News`,
+    slug: 'clinical-advances-precision-therapeutics',
+    category: categoryName,
+    subcategory: 'CLINICAL BREAKTHROUGHS',
+    excerpt: `Explore the latest peer-reviewed clinical research and specialist analysis in ${categoryName}.`,
+    description: `Explore the latest peer-reviewed clinical research and specialist analysis in ${categoryName}.`,
+    image_url: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1200&q=80',
+    published_at: new Date().toISOString(),
+    source_name: 'HealthGhuru Clinical Desk',
+  };
   const listStories = items.slice(1);
 
   return (

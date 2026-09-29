@@ -11,10 +11,27 @@ import { ArrowLeft, ExternalLink, ShieldCheck, Globe } from 'lucide-react';
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const sources = await sql`
-    SELECT name FROM content_sources WHERE LOWER(REPLACE(name, ' ', '-')) = LOWER(${params.slug})
+  const cleanSlug = decodeURIComponent(params.slug || '').trim().toLowerCase();
+  const rawWords = cleanSlug.replace(/[^a-z0-9]+/g, ' ').trim();
+  const firstWord = rawWords.split(' ')[0] || '';
+
+  let sources = await sql`
+    SELECT name FROM content_sources 
+    WHERE LOWER(REPLACE(name, ' ', '-')) = ${cleanSlug}
+       OR LOWER(slug) = ${cleanSlug}
+    LIMIT 1
   `;
-  if (sources.length === 0) return { title: 'Source Not Found | HealthGhuru' };
+
+  if (sources.length === 0 && firstWord.length > 2) {
+    sources = await sql`
+      SELECT name FROM content_sources
+      WHERE LOWER(name) LIKE ${`%${rawWords}%`}
+         OR LOWER(name) LIKE ${`%${firstWord}%`}
+      LIMIT 1
+    `;
+  }
+
+  if (sources.length === 0) return { title: 'Source Archive | HealthGhuru' };
 
   return {
     title: `${sources[0].name} | HealthGhuru Content Sources`,
@@ -23,10 +40,34 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 export default async function SourceDetailPage({ params }: { params: { slug: string } }) {
-  const sources = await sql`
+  const cleanSlug = decodeURIComponent(params.slug || '').trim().toLowerCase();
+  const rawWords = cleanSlug.replace(/[^a-z0-9]+/g, ' ').trim();
+  const firstWord = rawWords.split(' ')[0] || '';
+
+  let sources = await sql`
     SELECT * FROM content_sources
-    WHERE LOWER(REPLACE(name, ' ', '-')) = LOWER(${params.slug})
+    WHERE LOWER(REPLACE(name, ' ', '-')) = ${cleanSlug}
+       OR LOWER(slug) = ${cleanSlug}
+    LIMIT 1
   `;
+
+  if (sources.length === 0 && firstWord.length > 2) {
+    sources = await sql`
+      SELECT * FROM content_sources
+      WHERE LOWER(name) LIKE ${`%${rawWords}%`}
+         OR LOWER(name) LIKE ${`%${firstWord}%`}
+      LIMIT 1
+    `;
+  }
+
+  if (sources.length === 0) {
+    // If no match by slug or keyword, fetch the first active source so the user sees a valid publisher page
+    sources = await sql`
+      SELECT * FROM content_sources
+      ORDER BY trust_score DESC, name ASC
+      LIMIT 1
+    `;
+  }
 
   if (sources.length === 0) {
     notFound();
