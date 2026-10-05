@@ -289,10 +289,8 @@ export function LatestNewsFeed({ initialItems }: LatestNewsFeedProps) {
                 const slug = item.slug || `news-${index}`;
                 const badge = getCategoryBadge(item.category);
                 const BadgeIcon = badge.icon;
-                const rawImg = item.image_url || "";
-                const isBadImg = !rawImg || rawImg.toLowerCase().includes("screenshot") || rawImg.includes("localhost");
                 const fallbackImg = DEFAULT_FALLBACK_ITEMS[index % DEFAULT_FALLBACK_ITEMS.length].image_url;
-                const imageSrc = isBadImg ? fallbackImg : getSafeImageUrl(item.image_url, item.category, fallbackImg);
+                const imageSrc = getSafeImageUrl(item.image_url, item.category, fallbackImg);
 
                 return (
                   <article

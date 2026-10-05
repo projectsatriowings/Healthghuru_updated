@@ -84,7 +84,14 @@ export function getSafeImageUrl(
     return defaultFallback;
   }
 
-  const trimmed = url.trim();
+  let trimmed = url.trim();
+
+  // If a localhost or 127.0.0.1 absolute URL was saved in development, normalize to relative /uploads/...
+  if (trimmed.includes('localhost:3000/uploads/')) {
+    trimmed = trimmed.substring(trimmed.indexOf('/uploads/'));
+  } else if (trimmed.includes('127.0.0.1:3000/uploads/')) {
+    trimmed = trimmed.substring(trimmed.indexOf('/uploads/'));
+  }
 
   // Handle blocked/expired Meta/Instagram CDN hotlinks
   if (

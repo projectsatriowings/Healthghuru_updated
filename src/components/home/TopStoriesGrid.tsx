@@ -49,21 +49,12 @@ export function TopStoriesGrid({
   const primary = featuredStory || fallbackFeatured;
   const targetSlug = primary.slug || "eat-well-live-better-simple-nutrition-changes";
 
-  // Sanitize image URL: replace screenshots or localhost URLs with healthy salad bowl image from Image 1
-  const rawImageUrl = primary.image_url || "";
-  const isScreenshotOrBad =
-    !rawImageUrl ||
-    rawImageUrl.toLowerCase().includes("screenshot") ||
-    rawImageUrl.includes("localhost") ||
-    rawImageUrl.includes("127.0.0.1");
-
-  const heroImageUrl = isScreenshotOrBad
-    ? "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1400&q=85"
-    : getSafeImageUrl(
-        primary.image_url,
-        primary.category,
-        "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1400&q=85"
-      );
+  // Primary hero image
+  const heroImageUrl = getSafeImageUrl(
+    primary.image_url,
+    primary.category,
+    "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1400&q=85"
+  );
 
   return (
     <section className="w-full pt-3 sm:pt-4 pb-8 sm:pb-10">
@@ -172,10 +163,11 @@ export function TopStoriesGrid({
                     "https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?auto=format&fit=crop&w=400&q=80",
                     "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=400&q=80",
                   ];
-                  const rawSubImg = sub.image_url || "";
-                  const subImage = (!rawSubImg || rawSubImg.toLowerCase().includes("screenshot") || rawSubImg.includes("localhost"))
-                    ? defaultSubImages[idx % defaultSubImages.length]
-                    : getSafeImageUrl(sub.image_url, sub.category, defaultSubImages[idx % defaultSubImages.length]);
+                  const subImage = getSafeImageUrl(
+                    sub.image_url,
+                    sub.category,
+                    defaultSubImages[idx % defaultSubImages.length]
+                  );
 
                   return (
                     <Link

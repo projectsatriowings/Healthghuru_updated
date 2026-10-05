@@ -139,27 +139,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const uploadDir = join(process.cwd(), 'public', 'uploads');
-    try {
-      await mkdir(uploadDir, { recursive: true });
-    } catch {
-      // already exists
-    }
-
     const uploadedAssets = [];
 
     for (const file of filesToUpload) {
       const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-
-      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-      const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-      const filename = `${uniqueSuffix}-${sanitizedName}`;
-      const filepath = join(uploadDir, filename);
-
-      await writeFile(filepath, buffer);
-
-      const fileUrl = `/uploads/${filename}`;
+      let buffer = Buffer.from(bytes);
       const mimeType = file.type || inferMimeType(file.name);
       const mediaType = getMediaTypeFromMime(mimeType, file.name);
 
@@ -168,13 +152,48 @@ export async function POST(req: NextRequest) {
 
       if (mediaType === 'image' && !file.name.endsWith('.svg')) {
         try {
-          const meta = await sharp(buffer).metadata();
+          const sharpInstance = sharp(buffer).rotate();
+          const meta = await sharpInstance.metadata();
           width = meta.width ?? null;
           height = meta.height ?? null;
+          if (width && width > 2000) {
+            buffer = await sharpInstance.resize({ width: 2000, withoutEnlargement: true }).toBuffer();
+          }
         } catch {
           // non-fatal
         }
       }
+
+      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+      const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+      const filename = `${uniqueSuffix}-${sanitizedName}`;
+
+      // 1. Persist to uploaded_files in Neon PostgreSQL (survives live serverless / Vercel restarts)
+      try {
+        const base64 = buffer.toString('base64');
+        await sql`
+          INSERT INTO uploaded_files (filename, mime_type, file_size, data_base64)
+          VALUES (${filename}, ${mimeType}, ${buffer.length}, ${base64})
+          ON CONFLICT (filename) DO UPDATE SET
+            mime_type = EXCLUDED.mime_type,
+            file_size = EXCLUDED.file_size,
+            data_base64 = EXCLUDED.data_base64
+        `;
+      } catch (dbErr) {
+        console.warn('Could not insert into uploaded_files:', dbErr);
+      }
+
+      // 2. Best-effort write to local filesystem
+      try {
+        const uploadDir = join(process.cwd(), 'public', 'uploads');
+        await mkdir(uploadDir, { recursive: true });
+        const filepath = join(uploadDir, filename);
+        await writeFile(filepath, buffer);
+      } catch {
+        // Read-only filesystem on live — safely ignored
+      }
+
+      const fileUrl = `/uploads/${filename}`;
 
       const cleanTitle = file.name
         .replace(/\.[^/.]+$/, '')
@@ -260,7 +279,18 @@ export async function DELETE(req: NextRequest) {
       }
     }
 
-    // Delete records from database
+    // Delete records from database (both media_assets and uploaded_files)
+    const filenamesToDelete = assets.map((a: any) => a.filename).filter(Boolean);
+    if (filenamesToDelete.length > 0) {
+      try {
+        await sql`
+          DELETE FROM uploaded_files WHERE filename = ANY(${filenamesToDelete})
+        `;
+      } catch {
+        // non-fatal
+      }
+    }
+
     await sql`
       DELETE FROM media_assets WHERE id = ANY(${ids}::uuid[])
     `;
