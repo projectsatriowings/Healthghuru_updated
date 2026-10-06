@@ -109,21 +109,11 @@ export function TopStoriesGrid({
                     </span>
                   </div>
 
-                  {/* Headline & Description Content */}
+                  {/* Headline Only */}
                   <div className="mb-3 sm:mb-4 max-w-2xl">
-                    <h3 className="font-heading font-black text-xl sm:text-2xl md:text-3xl lg:text-[40px] text-white tracking-tight leading-[1.15] drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] group-hover:text-emerald-300 transition-colors">
+                    <h3 className="font-heading font-black text-xl sm:text-2xl md:text-3xl lg:text-[40px] text-emerald-300 group-hover:text-emerald-200 tracking-tight leading-[1.15] drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)] transition-colors">
                       {primary.title}
                     </h3>
-                    {(primary.subtitle || primary.excerpt) && (
-                      <p className="font-heading font-bold text-xs sm:text-base md:text-lg text-white/95 mt-1.5 sm:mt-2.5 line-clamp-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
-                        {primary.subtitle || primary.excerpt}
-                      </p>
-                    )}
-                    {(primary.description || primary.summary) && (
-                      <p className="text-xs sm:text-sm text-slate-100 font-medium mt-1 sm:mt-2 leading-relaxed line-clamp-2 drop-shadow-[0_1px_6px_rgba(0,0,0,0.9)] hidden xs:block">
-                        {primary.description || primary.summary}
-                      </p>
-                    )}
                   </div>
 
                   {/* Bottom Row */}
