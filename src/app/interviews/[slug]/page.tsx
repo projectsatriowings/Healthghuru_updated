@@ -31,9 +31,17 @@ export async function generateMetadata({
     return {
       title: `${items[0].title} | HealthGhuru Doctor Interview`,
       description: items[0].summary,
+      alternates: {
+        canonical: `/interviews/${params.slug}`,
+      },
     };
   }
-  return { title: 'Doctor Interview | HealthGhuru' };
+  return {
+    title: 'Doctor Interview | HealthGhuru',
+    alternates: {
+      canonical: `/interviews/${params.slug}`,
+    },
+  };
 }
 
 export default async function InterviewDetailPage({

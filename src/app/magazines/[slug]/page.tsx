@@ -53,6 +53,9 @@ export async function generateMetadata({ params }: MagazineSlugProps): Promise<M
     return {
       title: 'Magazine Issue | HealthGhuru',
       description: 'Official digital health magazine edition from HealthGhuru.',
+      alternates: {
+        canonical: `/magazines/${slug}`,
+      },
     };
   }
 
@@ -60,6 +63,9 @@ export async function generateMetadata({ params }: MagazineSlugProps): Promise<M
   return {
     title: `${mag.title} | HealthGhuru Digital Periodical`,
     description: mag.excerpt || mag.description || 'Verified evidence-based clinical and lifestyle reports.',
+    alternates: {
+      canonical: `/magazines/${slug}`,
+    },
     openGraph: {
       title: mag.title,
       description: mag.excerpt || mag.description,

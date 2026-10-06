@@ -43,6 +43,9 @@ export async function generateMetadata({
     return {
       title: `${item.title} | HealthGhuru News`,
       description: item.excerpt || item.description,
+      alternates: {
+        canonical: `/article/${cleanSlug}`,
+      },
       openGraph: {
         title: item.title,
         description: item.excerpt,
@@ -63,6 +66,9 @@ export async function generateMetadata({
     return {
       title: `${legacy[0].title} | HealthGhuru`,
       description: legacy[0].excerpt,
+      alternates: {
+        canonical: `/article/${cleanSlug}`,
+      },
     };
   }
 
@@ -72,6 +78,9 @@ export async function generateMetadata({
     return {
       title: `${fb.title} | HealthGhuru News`,
       description: fb.excerpt || fb.description,
+      alternates: {
+        canonical: `/article/${cleanSlug}`,
+      },
       openGraph: {
         title: fb.title,
         description: fb.excerpt,
@@ -82,7 +91,12 @@ export async function generateMetadata({
     };
   }
 
-  return { title: 'Health News Article | HealthGhuru' };
+  return {
+    title: 'Health News Article | HealthGhuru',
+    alternates: {
+      canonical: `/article/${cleanSlug}`,
+    },
+  };
 }
 
 export default async function ArticlePage({

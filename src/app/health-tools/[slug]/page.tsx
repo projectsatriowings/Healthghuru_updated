@@ -33,12 +33,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!tool) {
     return {
       title: 'Health Tool Not Found | HealthGuru',
+      alternates: {
+        canonical: `/health-tools/${params.slug}`,
+      },
     };
   }
 
   return {
     title: `${tool.name} | Health Tools | HealthGuru`,
     description: tool.description,
+    alternates: {
+      canonical: `/health-tools/${params.slug}`,
+    },
   };
 }
 

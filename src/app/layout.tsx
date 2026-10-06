@@ -43,9 +43,42 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://healthghuru.com';
+
 export const metadata: Metadata = {
-  title: "HealthGhuru — Live Better. Feel Stronger.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "HealthGhuru — Live Better. Feel Stronger.",
+    template: "%s | HealthGhuru",
+  },
   description: "Science-backed wellness platform covering Nutrition, Sleep, Fitness and Mental Health. 20,000+ expert-reviewed articles.",
+  alternates: {
+    canonical: "./",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  openGraph: {
+    title: "HealthGhuru — Live Better. Feel Stronger.",
+    description: "Science-backed wellness platform covering Nutrition, Sleep, Fitness and Mental Health. 20,000+ expert-reviewed articles.",
+    url: siteUrl,
+    siteName: "HealthGhuru",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "HealthGhuru — Live Better. Feel Stronger.",
+    description: "Science-backed wellness platform covering Nutrition, Sleep, Fitness and Mental Health. 20,000+ expert-reviewed articles.",
+  },
   icons: {
     icon: [
       { url: "/icon.png", type: "image/png" },

@@ -31,9 +31,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const articles = await sql`
       SELECT slug, updated_at, published_at
       FROM content_items
-      WHERE status = 'published' AND deleted_at IS NULL
+      WHERE status = 'published' AND deleted_at IS NULL AND content_type = 'article'
       ORDER BY published_at DESC
-      LIMIT 500
+      LIMIT 1000
     `;
 
     const articleRoutes: MetadataRoute.Sitemap = articles.map((item: any) => ({
@@ -43,12 +43,43 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     }));
 
+    // Dynamic Video URLs
+    const videos = await sql`
+      SELECT slug, updated_at, published_at
+      FROM content_items
+      WHERE status = 'published' AND deleted_at IS NULL AND content_type = 'video'
+      ORDER BY published_at DESC
+      LIMIT 200
+    `;
+
+    const videoRoutes: MetadataRoute.Sitemap = videos.map((item: any) => ({
+      url: `${baseUrl}/video/${item.slug}`,
+      lastModified: new Date(item.updated_at || item.published_at || Date.now()),
+      changeFrequency: 'weekly',
+      priority: 0.75,
+    }));
+
+    // Dynamic Hospital URLs
+    const hospitals = await sql`
+      SELECT slug, updated_at
+      FROM hospitals
+      WHERE is_active = true OR is_active IS NULL
+      LIMIT 500
+    `;
+
+    const hospitalRoutes: MetadataRoute.Sitemap = hospitals.map((item: any) => ({
+      url: `${baseUrl}/hospitals/${item.slug}`,
+      lastModified: new Date(item.updated_at || Date.now()),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    }));
+
     // Dynamic Doctor Interview URLs
     const interviews = await sql`
       SELECT slug, published_at
       FROM doctor_interviews
       ORDER BY published_at DESC
-      LIMIT 50
+      LIMIT 100
     `;
 
     const interviewRoutes: MetadataRoute.Sitemap = interviews.map((item: any) => ({
@@ -58,7 +89,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.75,
     }));
 
-    return [...staticRoutes, ...articleRoutes, ...interviewRoutes];
+    return [
+      ...staticRoutes,
+      ...articleRoutes,
+      ...videoRoutes,
+      ...hospitalRoutes,
+      ...interviewRoutes,
+    ];
   } catch (err) {
     console.error('Error building sitemap:', err);
     return staticRoutes;

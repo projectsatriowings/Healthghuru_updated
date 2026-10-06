@@ -43,9 +43,17 @@ export async function generateMetadata({
     return {
       title: `${hosp.name} — Accredited Medical Center | HealthGhuru`,
       description: hosp.about || `Explore medical specializations, key facilities, and verified doctors at ${hosp.name} in ${hosp.city}, ${hosp.state}.`,
+      alternates: {
+        canonical: `/hospitals/${cleanSlug}`,
+      },
     };
   }
-  return { title: 'Hospital Details | HealthGhuru' };
+  return {
+    title: 'Hospital Details | HealthGhuru',
+    alternates: {
+      canonical: `/hospitals/${cleanSlug}`,
+    },
+  };
 }
 
 export default async function HospitalDetailPage({

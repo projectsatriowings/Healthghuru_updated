@@ -31,11 +31,21 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     `;
   }
 
-  if (sources.length === 0) return { title: 'Source Archive | HealthGhuru' };
+  if (sources.length === 0) {
+    return {
+      title: 'Source Archive | HealthGhuru',
+      alternates: {
+        canonical: `/source/${cleanSlug}`,
+      },
+    };
+  }
 
   return {
     title: `${sources[0].name} | HealthGhuru Content Sources`,
     description: `Syndicated health news and evidence-based articles from ${sources[0].name}.`,
+    alternates: {
+      canonical: `/source/${cleanSlug}`,
+    },
   };
 }
 

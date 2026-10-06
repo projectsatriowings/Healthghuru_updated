@@ -56,11 +56,21 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const items = await sql`
     SELECT title, excerpt FROM content_items WHERE (slug = ${params.slug} OR slug = ${slug}) AND content_type = 'video'
   `;
-  if (items.length === 0) return { title: 'Video Not Found | HealthGhuru' };
+  if (items.length === 0) {
+    return {
+      title: 'Video Not Found | HealthGhuru',
+      alternates: {
+        canonical: `/video/${slug}`,
+      },
+    };
+  }
 
   return {
     title: `${items[0].title} | HealthGhuru Videos`,
     description: items[0].excerpt,
+    alternates: {
+      canonical: `/video/${slug}`,
+    },
   };
 }
 

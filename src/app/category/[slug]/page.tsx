@@ -123,6 +123,9 @@ export async function generateMetadata({
       cats.length > 0
         ? cats[0].description
         : `Latest clinical breakthroughs, treatments, and physician insights in ${name}.`,
+    alternates: {
+      canonical: `/category/${cleanSlug}`,
+    },
   };
 }
 

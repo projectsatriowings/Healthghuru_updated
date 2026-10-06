@@ -37,6 +37,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   return {
     title: `${post.title} | HealthGhuru Blog`,
     description: post.excerpt,
+    alternates: {
+      canonical: `/blog/${params.slug}`,
+    },
   };
 }
 
