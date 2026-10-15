@@ -336,7 +336,7 @@ export function TopStoriesGrid({
                             {story.title}
                           </h4>
                           <div className="flex items-center gap-2 text-[10px] font-mono text-slate-400 mt-1">
-                            <span>{story.view_count ? `${story.view_count} reads` : '4.2k reads'}</span>
+                            <span>{story.view_count ? `${story.view_count} reads` : '0 reads'}</span>
                             <span>•</span>
                             <span className="text-[#f06d2f] font-semibold">Trending</span>
                           </div>

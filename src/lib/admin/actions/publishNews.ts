@@ -23,6 +23,8 @@ export interface NewsPublishPayload {
   heroImageUrl?: string;
   galleryImages?: string[];
   isBreaking?: boolean;
+  isFeatured?: boolean;
+  showOnHomepage?: boolean;
   showInSidebar?: boolean;
   sendPush?: boolean;
   status?: 'published' | 'draft';
@@ -47,10 +49,14 @@ export async function publishNews(payload: NewsPublishPayload) {
     heroImageUrl = '',
     galleryImages = [],
     isBreaking = false,
+    isFeatured = false,
+    showOnHomepage = false,
     showInSidebar = false,
     sendPush = false,
     status = 'published',
   } = payload;
+
+  const finalIsFeatured = Boolean(isFeatured || showOnHomepage);
 
   if (!title.trim()) {
     throw new Error('Title is mandatory');
@@ -60,10 +66,14 @@ export async function publishNews(payload: NewsPublishPayload) {
   }
 
   // Generate clean slug
-  const baseSlug = (payload.slug && payload.slug.trim())
+  let baseSlug = (payload.slug && payload.slug.trim())
     ? payload.slug.trim()
     : title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   
+  if (!baseSlug || baseSlug.replace(/-/g, '').length === 0) {
+    baseSlug = `news-${Date.now()}`;
+  }
+
   const uniqueSuffix = Math.floor(1000 + Math.random() * 9000);
   const slug = `${baseSlug}-${uniqueSuffix}`.slice(0, 240);
 
@@ -133,6 +143,7 @@ export async function publishNews(payload: NewsPublishPayload) {
       show_in_sidebar: showInSidebar,
       send_push: sendPush,
       seo_keywords: seoKeywords,
+      show_on_homepage: finalIsFeatured,
     };
 
     const contentType = (payload as any).contentType || 'news';
@@ -159,7 +170,7 @@ export async function publishNews(payload: NewsPublishPayload) {
         ${language},
         ${category},
         FALSE,
-        TRUE,
+        ${Boolean(finalIsFeatured)},
         FALSE,
         ${Boolean(isBreaking)},
         TRUE,
@@ -179,6 +190,7 @@ export async function publishNews(payload: NewsPublishPayload) {
         language = EXCLUDED.language,
         status = EXCLUDED.status,
         is_breaking = EXCLUDED.is_breaking,
+        is_featured = EXCLUDED.is_featured,
         raw_metadata = EXCLUDED.raw_metadata,
         updated_at = CURRENT_TIMESTAMP
     `;
@@ -234,22 +246,28 @@ export async function publishNews(payload: NewsPublishPayload) {
     console.error('Warning: Failed to sync news article to content_items:', contentSyncErr);
   }
 
-  // Write audit log
-  await writeAuditLog({
-    adminUserId: session.user.id,
-    actionType: 'article_create',
-    targetTable: 'articles',
-    targetId: articleId,
-    afterValue: { title, category, status, isBreaking, language },
-  });
+  // Write audit log (non-fatal)
+  try {
+    await writeAuditLog({
+      adminUserId: session.user.id,
+      actionType: 'article_create',
+      targetTable: 'articles',
+      targetId: articleId,
+      afterValue: { title, category, status, isBreaking, language, isFeatured: finalIsFeatured },
+    });
+  } catch (auditErr) {
+    console.warn('Audit log write warning in publishNews:', auditErr);
+  }
 
   // 3. Instant Real-Time User Panel Cache Revalidation
   try {
     revalidatePath('/');
     revalidatePath('/latest');
+    revalidatePath('/news');
     const categorySlug = category.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     revalidatePath(`/category/${categorySlug}`);
     revalidatePath(`/article/${slug}`);
+    revalidatePath('/admin/all-news');
     revalidatePath('/admin/content');
     revalidatePath('/admin/add-news');
   } catch (revalErr) {

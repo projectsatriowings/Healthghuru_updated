@@ -20,6 +20,7 @@ import {
   Eye,
   Send,
   Wand2,
+  Loader2,
 } from 'lucide-react';
 import { publishNews } from '@/lib/admin/actions/publishNews';
 
@@ -56,11 +57,13 @@ export function AddNewsClient() {
   // Media State
   const [coverImageUrl, setCoverImageUrl] = useState('');
   const [uploadingCover, setUploadingCover] = useState(false);
+  const [isDraggingCover, setIsDraggingCover] = useState(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [uploadingGallery, setUploadingGallery] = useState(false);
 
   // Settings
   const [isBreaking, setIsBreaking] = useState(false);
+  const [showOnHomepage, setShowOnHomepage] = useState(false);
   const [showInSidebar, setShowInSidebar] = useState(false);
   const [sendPush, setSendPush] = useState(false);
 
@@ -71,13 +74,14 @@ export function AddNewsClient() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [aiGrammarMessage, setAiGrammarMessage] = useState<string | null>(null);
 
+  const titleInputRef = useRef<HTMLInputElement | null>(null);
+  const excerptInputRef = useRef<HTMLTextAreaElement | null>(null);
   const coverFileInputRef = useRef<HTMLInputElement | null>(null);
   const galleryFileInputRef = useRef<HTMLInputElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   // Cover image upload
-  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const uploadCoverFile = async (file: File) => {
     if (!file) return;
 
     setUploadingCover(true);
@@ -96,6 +100,13 @@ export function AddNewsClient() {
       setErrorMessage(err.message || 'Image upload failed');
     } finally {
       setUploadingCover(false);
+    }
+  };
+
+  const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      uploadCoverFile(file);
     }
   };
 
@@ -165,15 +176,21 @@ export function AddNewsClient() {
     setSuccessMessage(null);
 
     if (!title.trim()) {
-      setErrorMessage('Headline Title is mandatory.');
+      setErrorMessage('Headline Title is mandatory. Please enter a title for the news article.');
+      titleInputRef.current?.focus();
+      titleInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
     if (!excerpt.trim()) {
-      setErrorMessage('Short Description (Summary) is mandatory.');
+      setErrorMessage('Short Description (Summary) is mandatory. Please provide a brief excerpt.');
+      excerptInputRef.current?.focus();
+      excerptInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
     if (!content.trim()) {
-      setErrorMessage('Full Description / Article Content is mandatory.');
+      setErrorMessage('Full Description / Article Content is mandatory. Please provide the article body.');
+      textareaRef.current?.focus();
+      textareaRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
 
@@ -198,17 +215,19 @@ export function AddNewsClient() {
         heroImageUrl: coverImageUrl,
         galleryImages,
         isBreaking,
+        isFeatured: showOnHomepage,
+        showOnHomepage,
         showInSidebar,
         sendPush,
         status,
       });
 
       if (result.success) {
-        setSuccessMessage(`News successfully ${status === 'published' ? 'published live' : 'saved as draft'}! Redirecting...`);
+        setSuccessMessage(`News successfully ${status === 'published' ? 'published live' : 'saved as draft'}! Redirecting to All News...`);
         setTimeout(() => {
           router.push('/admin/all-news');
           router.refresh();
-        }, 1500);
+        }, 1200);
       }
     } catch (err: any) {
       setErrorMessage(err.message || 'Failed to publish news.');
@@ -284,6 +303,7 @@ export function AddNewsClient() {
             Title <span className="text-red-500">*</span>
           </label>
           <input
+            ref={titleInputRef}
             type="text"
             required
             value={title}
@@ -331,6 +351,7 @@ export function AddNewsClient() {
             Short Description (Summary) <span className="text-red-500">*</span>
           </label>
           <textarea
+            ref={excerptInputRef}
             required
             rows={3}
             value={excerpt}
@@ -484,7 +505,20 @@ export function AddNewsClient() {
               Cover Image Upload <span className="text-red-500">*</span>
             </label>
             
-            <div className="bg-surface border-2 border-dashed border-gray-300 rounded-xl p-4 text-center hover:border-primary/50 transition-colors">
+            <div
+              onClick={() => !coverImageUrl && coverFileInputRef.current?.click()}
+              onDragOver={(e) => { e.preventDefault(); setIsDraggingCover(true); }}
+              onDragLeave={() => setIsDraggingCover(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setIsDraggingCover(false);
+                const file = e.dataTransfer.files?.[0];
+                if (file) uploadCoverFile(file);
+              }}
+              className={`bg-surface border-2 border-dashed rounded-xl p-4 text-center transition-colors ${
+                isDraggingCover ? 'border-primary bg-primary/5' : 'border-gray-300 hover:border-primary/50'
+              } ${!coverImageUrl ? 'cursor-pointer' : ''}`}
+            >
               {coverImageUrl ? (
                 <div className="relative aspect-video rounded-lg overflow-hidden border border-gray-200 group">
                   <img
@@ -494,7 +528,7 @@ export function AddNewsClient() {
                   />
                   <button
                     type="button"
-                    onClick={() => setCoverImageUrl('')}
+                    onClick={(e) => { e.stopPropagation(); setCoverImageUrl(''); }}
                     className="absolute top-2 right-2 bg-black/70 hover:bg-red-600 text-white p-1 rounded-full transition-colors cursor-pointer"
                     title="Remove Cover Image"
                   >
@@ -503,7 +537,7 @@ export function AddNewsClient() {
                 </div>
               ) : (
                 <div className="py-6 space-y-2">
-                  <ImageIcon size={32} className="mx-auto text-text-muted" />
+                  <ImageIcon size={32} className={`mx-auto ${isDraggingCover ? 'text-primary scale-110' : 'text-text-muted'} transition-transform`} />
                   <div className="text-xs text-text-secondary">
                     <span className="text-primary font-semibold">Click to upload</span> or drag and drop
                   </div>
@@ -518,7 +552,7 @@ export function AddNewsClient() {
                   <button
                     type="button"
                     disabled={uploadingCover}
-                    onClick={() => coverFileInputRef.current?.click()}
+                    onClick={(e) => { e.stopPropagation(); coverFileInputRef.current?.click(); }}
                     className="mt-2 px-3.5 py-1.5 bg-white hover:bg-surface text-dark border border-gray-200 rounded-lg text-xs font-semibold inline-flex items-center gap-1.5 shadow-2xs cursor-pointer"
                   >
                     <Upload size={12} className="text-primary" />
@@ -599,7 +633,117 @@ export function AddNewsClient() {
 
         </div>
 
+        {/* Editorial Visibility & Placement Flags (Breaking News & Home Page Checkboxes) */}
+        <div className="bg-[#f0fdf4] border border-emerald-200/90 rounded-2xl p-5 sm:p-6 space-y-4 shadow-2xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+                <h3 className="font-heading font-bold text-sm text-emerald-950">
+                  Editorial Placements & Live Visibility
+                </h3>
+              </div>
+              <p className="text-xs text-emerald-800/80 mt-0.5">
+                Choose where this news article should appear on the HealthGhuru portal.
+              </p>
+            </div>
+            <span className="text-[10px] font-mono font-bold uppercase tracking-wider bg-emerald-100/90 text-emerald-800 border border-emerald-200 px-2.5 py-1 rounded-full self-start sm:self-auto">
+              Live Visibility Controls
+            </span>
+          </div>
 
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+            {/* 1. Breaking News Checkbox */}
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => setIsBreaking((prev) => !prev)}
+              onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setIsBreaking((prev) => !prev); } }}
+              className={`flex items-start gap-3.5 p-4 rounded-xl border-2 cursor-pointer transition-all select-none ${
+                isBreaking
+                  ? 'bg-red-50/90 border-red-500 shadow-xs ring-2 ring-red-500/20'
+                  : 'bg-white border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <input
+                type="checkbox"
+                id="add_breaking"
+                checked={isBreaking}
+                onChange={(e) => setIsBreaking(e.target.checked)}
+                onClick={(e) => e.stopPropagation()}
+                className="mt-1 w-4 h-4 rounded border-gray-300 text-red-600 focus:ring-red-500 cursor-pointer"
+              />
+              <div className="space-y-0.5 pointer-events-none">
+                <div className="font-heading font-bold text-sm text-dark flex items-center gap-1.5 flex-wrap">
+                  <span className="text-red-600">🚨</span>
+                  <span>Mark as Breaking News</span>
+                  <span className="text-xs text-red-600 font-semibold">(முக்கிய செய்தி)</span>
+                </div>
+                <p className="text-xs text-text-secondary leading-relaxed">
+                  Shows on the live ticker banner across the top of the website.
+                </p>
+              </div>
+            </div>
+
+            {/* 2. Home Page Checkbox */}
+            <div
+              role="button"
+              tabIndex={0}
+              onClick={() => setShowOnHomepage((prev) => !prev)}
+              onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setShowOnHomepage((prev) => !prev); } }}
+              className={`flex items-start gap-3.5 p-4 rounded-xl border-2 cursor-pointer transition-all select-none ${
+                showOnHomepage
+                  ? 'bg-emerald-50/90 border-emerald-600 shadow-xs ring-2 ring-emerald-600/20'
+                  : 'bg-white border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              <input
+                type="checkbox"
+                id="add_homepage"
+                checked={showOnHomepage}
+                onChange={(e) => setShowOnHomepage(e.target.checked)}
+                onClick={(e) => e.stopPropagation()}
+                className="mt-1 w-4 h-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+              />
+              <div className="space-y-0.5 pointer-events-none">
+                <div className="font-heading font-bold text-sm text-dark flex items-center gap-1.5 flex-wrap">
+                  <span className="text-emerald-600">🏠</span>
+                  <span>Show on Home Page</span>
+                  <span className="text-xs text-emerald-700 font-semibold">(முகப்புப் பக்கம்)</span>
+                </div>
+                <p className="text-xs text-text-secondary leading-relaxed">
+                  Displays in Top Stories, Hero spotlight, and primary feeds on the homepage.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Error Notification */}
+        {errorMessage && (
+          <div className="bg-red-50 text-red-800 border-2 border-red-300 px-4 py-3.5 rounded-xl text-xs font-semibold flex items-center justify-between gap-3 shadow-xs animate-in fade-in">
+            <div className="flex items-center gap-2">
+              <AlertCircle size={18} className="text-red-600 shrink-0" />
+              <span>{errorMessage}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setErrorMessage(null)}
+              className="text-red-500 hover:text-red-700 p-1 cursor-pointer"
+              title="Dismiss error"
+            >
+              <X size={15} />
+            </button>
+          </div>
+        )}
+
+        {/* Bottom Success Notification */}
+        {successMessage && (
+          <div className="bg-emerald-50 text-emerald-900 border-2 border-emerald-300 px-4 py-3.5 rounded-xl text-xs font-semibold flex items-center gap-2.5 shadow-xs animate-in fade-in">
+            <CheckCircle2 size={18} className="text-emerald-600 shrink-0" />
+            <span>{successMessage}</span>
+          </div>
+        )}
 
         {/* Bottom Actions */}
         <div className="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
@@ -607,9 +751,9 @@ export function AddNewsClient() {
             type="button"
             disabled={isSubmitting}
             onClick={() => handlePublish('draft')}
-            className="px-5 py-2.5 bg-surface hover:bg-surface-alt text-text-secondary border border-gray-200 rounded-xl font-heading font-semibold text-xs transition-colors cursor-pointer"
+            className="px-5 py-2.5 bg-surface hover:bg-surface-alt text-text-secondary border border-gray-200 rounded-xl font-heading font-semibold text-xs transition-colors cursor-pointer disabled:opacity-50"
           >
-            Save as Draft
+            {isSubmitting ? 'Saving...' : 'Save as Draft'}
           </button>
 
           <button
@@ -618,8 +762,17 @@ export function AddNewsClient() {
             onClick={() => handlePublish('published')}
             className="px-6 py-2.5 bg-[#f06d2f] hover:bg-[#e05b1d] text-white rounded-xl font-heading font-bold text-xs shadow-xs transition-all cursor-pointer disabled:opacity-50 inline-flex items-center gap-1.5"
           >
-            <Send size={14} />
-            <span>{isSubmitting ? 'Publishing...' : 'Publish News Immediately'}</span>
+            {isSubmitting ? (
+              <>
+                <Loader2 size={14} className="animate-spin" />
+                <span>Publishing News...</span>
+              </>
+            ) : (
+              <>
+                <Send size={14} />
+                <span>Publish News Immediately</span>
+              </>
+            )}
           </button>
         </div>
 

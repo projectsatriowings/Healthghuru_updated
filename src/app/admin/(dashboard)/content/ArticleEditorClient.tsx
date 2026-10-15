@@ -251,7 +251,20 @@ export function ArticleEditorClient({ initialArticle }: { initialArticle?: any }
                 className="w-4 h-4 rounded text-red-600 focus:ring-red-500/40"
               />
               <label htmlFor="isBreakingToggle" className="text-xs font-semibold text-red-700 cursor-pointer">
-                🚨 Breaking News Banner
+                🚨 Mark as Breaking News (முக்கிய செய்தி)
+              </label>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="isFeaturedToggle"
+                checked={formData.isFeatured}
+                onChange={e => setFormData({ ...formData, isFeatured: e.target.checked })}
+                className="w-4 h-4 rounded text-primary focus:ring-primary/40"
+              />
+              <label htmlFor="isFeaturedToggle" className="text-xs font-semibold text-emerald-800 cursor-pointer">
+                🏠 Show on Home Page (முகப்புப் பக்கம்)
               </label>
             </div>
 
@@ -265,19 +278,6 @@ export function ArticleEditorClient({ initialArticle }: { initialArticle?: any }
               />
               <label htmlFor="isEditorPickToggle" className="text-xs font-semibold text-dark cursor-pointer">
                 ⭐ Editor&apos;s Pick Spotlight
-              </label>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="isFeaturedToggle"
-                checked={formData.isFeatured}
-                onChange={e => setFormData({ ...formData, isFeatured: e.target.checked })}
-                className="w-4 h-4 rounded text-primary focus:ring-primary/40"
-              />
-              <label htmlFor="isFeaturedToggle" className="text-xs font-semibold text-dark cursor-pointer">
-                🔥 Hero Top Story (Featured)
               </label>
             </div>
 

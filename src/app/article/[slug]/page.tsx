@@ -145,6 +145,11 @@ export default async function ArticlePage({
       ...(legacyArticles.length > 0 ? { blocks: legacyArticles[0].blocks } : {}),
       raw_metadata: rawMeta,
     };
+
+    // Increment 100% genuine database view count on article read
+    if (contentItems[0]?.id) {
+      sql`UPDATE content_items SET view_count = COALESCE(view_count, 0) + 1 WHERE id = ${contentItems[0].id}::uuid`.catch(() => {});
+    }
   } else if (legacyArticles.length > 0) {
     const leg = legacyArticles[0];
     article = {

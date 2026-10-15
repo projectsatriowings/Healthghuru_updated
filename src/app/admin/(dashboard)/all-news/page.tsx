@@ -29,6 +29,7 @@ export default async function AllNewsPage({
         image_url,
         published_at,
         is_breaking,
+        is_featured,
         status,
         raw_metadata
       FROM content_items

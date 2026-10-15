@@ -17,6 +17,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { AdminSidebarNav } from './AdminSidebarNav';
 import { AdminNotificationBell } from '@/components/admin/notifications/AdminNotificationBell';
+import { LiveViewersBadge } from '@/components/admin/LiveViewersBadge';
 
 interface AdminLayoutClientProps {
   children: ReactNode;
@@ -257,11 +258,8 @@ export function AdminLayoutClient({ children, signOutAction }: AdminLayoutClient
 
           {/* Right: Actions, Live Indicator, Site Link & Admin Avatar */}
           <div className="flex items-center gap-2.5 sm:gap-4 shrink-0">
-            {/* Live Indicator Pill */}
-            <div className="hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-mono font-bold shadow-2xs">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>LIVE SYSTEM</span>
-            </div>
+            {/* Live Visitors Pill matching NewsGhuru reference */}
+            <LiveViewersBadge />
 
             {/* View Live Website Button */}
             <Link

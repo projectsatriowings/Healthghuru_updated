@@ -59,7 +59,7 @@ export default async function Home() {
       FROM content_items i
       LEFT JOIN content_sources s ON i.source_id = s.id
       WHERE i.status = 'published' AND i.deleted_at IS NULL
-      ORDER BY (i.is_breaking::int * 1000 + i.is_featured::int * 50) DESC, i.published_at DESC
+      ORDER BY (i.is_featured::int * 1000 + i.is_breaking::int * 500) DESC, i.published_at DESC
       LIMIT 12
     `,
 
@@ -79,7 +79,7 @@ export default async function Home() {
       FROM content_items i
       LEFT JOIN content_sources s ON i.source_id = s.id
       WHERE i.status = 'published' AND i.deleted_at IS NULL
-      ORDER BY i.published_at DESC
+      ORDER BY (i.is_featured::int * 100) DESC, i.published_at DESC
       LIMIT 20
     `,
 
@@ -419,10 +419,11 @@ export default async function Home() {
 
     switch (id) {
       case 'breaking':
+        if (!breakingNews || breakingNews.length === 0) return null;
         return (
           <BreakingNewsTicker
             key={section.id}
-            items={breakingNews.length > 0 ? breakingNews : topItems}
+            items={breakingNews}
           />
         );
 

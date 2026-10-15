@@ -74,7 +74,7 @@ const DEFAULT_MOST_READ = [
     title: 'Fermented Foods vs Synthetic Probiotics: Microbiome Diversity Study Shows Surprising Results',
     slug: 'fermented-foods-vs-synthetic-probiotics',
     category: 'NUTRITION',
-    view_count: '6.4k',
+    view_count: 0,
     read_time: '5 min read',
   },
   {
@@ -82,7 +82,7 @@ const DEFAULT_MOST_READ = [
     title: 'Zone-2 Aerobic Conditioning Proven To Maximize Mitochondrial Density and Insulin Sensitivity',
     slug: 'zone-2-aerobic-conditioning-mitochondrial-density',
     category: 'FITNESS',
-    view_count: '5.8k',
+    view_count: 0,
     read_time: '4 min read',
   },
   {
@@ -90,7 +90,7 @@ const DEFAULT_MOST_READ = [
     title: 'Neuroimaging Confirms Mindful Breathwork and Vagal Nerve Stimulation Reduce Cortisol By 38%',
     slug: 'mindful-breathwork-vagal-nerve-cortisol-reduction',
     category: 'MENTAL HEALTH',
-    view_count: '5.1k',
+    view_count: 0,
     read_time: '6 min read',
   },
   {
@@ -98,7 +98,7 @@ const DEFAULT_MOST_READ = [
     title: 'Pediatric Screen Time Thresholds Correlated With Deep Sleep Latency and Cognitive Attention',
     slug: 'pediatric-screen-time-thresholds-deep-sleep',
     category: 'PEDIATRICS',
-    view_count: '4.7k',
+    view_count: 0,
     read_time: '5 min read',
   },
   {
@@ -106,7 +106,7 @@ const DEFAULT_MOST_READ = [
     title: 'WHO Releases Global Guidance on Maternal Iron Deficiency and Postpartum Mental Wellness',
     slug: 'who-global-guidance-maternal-iron-deficiency',
     category: "WOMEN'S HEALTH",
-    view_count: '4.2k',
+    view_count: 0,
     read_time: '4 min read',
   },
 ];
@@ -327,7 +327,7 @@ export function EditorsPicksMostRead({
                           <>
                             <span className="flex items-center gap-1 text-slate-500 font-mono">
                               <Eye size={10} className="text-[#f06d2f]" />
-                              <span>{typeof story.view_count === 'number' ? `${story.view_count} views` : (story.view_count || '5.4k views')}</span>
+                              <span>{`${story.view_count || 0} views`}</span>
                             </span>
                             <span>•</span>
                           </>

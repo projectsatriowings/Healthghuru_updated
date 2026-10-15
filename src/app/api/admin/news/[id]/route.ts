@@ -55,9 +55,13 @@ export async function PUT(
       content,
       heroImageUrl,
       isBreaking,
+      isFeatured,
+      showOnHomepage,
       status,
       tags,
     } = body;
+
+    const finalIsFeatured = isFeatured !== undefined ? Boolean(isFeatured) : showOnHomepage !== undefined ? Boolean(showOnHomepage) : undefined;
 
     if (!title || !excerpt) {
       return NextResponse.json({ success: false, error: 'Title and Excerpt are mandatory' }, { status: 400 });
@@ -104,6 +108,7 @@ export async function PUT(
       ...rawMeta,
       subtitle: subtitle || '',
       location: location || '',
+      ...(finalIsFeatured !== undefined ? { show_on_homepage: finalIsFeatured } : {}),
     };
 
     const [updatedContent] = await sql`
@@ -117,6 +122,7 @@ export async function PUT(
         image_url = ${heroImageUrl || null},
         status = ${status || 'published'},
         is_breaking = ${Boolean(isBreaking)},
+        ${finalIsFeatured !== undefined ? sql`is_featured = ${Boolean(finalIsFeatured)},` : sql``}
         raw_metadata = ${JSON.stringify(updatedRawMetadata)}::jsonb,
         updated_at = NOW()
       WHERE id = ${id}::uuid
@@ -127,6 +133,7 @@ export async function PUT(
     try {
       revalidatePath('/');
       revalidatePath('/latest');
+      revalidatePath('/news');
       if (updatedContent?.category) {
         const catSlug = updatedContent.category.toLowerCase().replace(/[^a-z0-9]+/g, '-');
         revalidatePath(`/category/${catSlug}`);

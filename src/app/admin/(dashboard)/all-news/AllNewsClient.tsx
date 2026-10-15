@@ -32,6 +32,7 @@ interface NewsItem {
   image_url?: string;
   published_at: string;
   is_breaking?: boolean;
+  is_featured?: boolean;
   raw_metadata?: any;
 }
 
@@ -99,6 +100,7 @@ export function AllNewsClient({ initialNews, totalCount: serverTotalCount }: All
     content: '',
     heroImageUrl: '',
     isBreaking: false,
+    isFeatured: false,
   });
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
@@ -144,6 +146,7 @@ export function AllNewsClient({ initialNews, totalCount: serverTotalCount }: All
       content: item.description || item.excerpt || '',
       heroImageUrl: item.image_url || '',
       isBreaking: Boolean(item.is_breaking),
+      isFeatured: Boolean(item.is_featured),
     });
     setModalMessage(null);
   };
@@ -202,6 +205,7 @@ export function AllNewsClient({ initialNews, totalCount: serverTotalCount }: All
                   description: editFormData.content,
                   image_url: editFormData.heroImageUrl,
                   is_breaking: editFormData.isBreaking,
+                  is_featured: editFormData.isFeatured,
                   raw_metadata: {
                     ...(typeof n.raw_metadata === 'object' ? n.raw_metadata : {}),
                     subtitle: editFormData.subtitle,
@@ -551,15 +555,20 @@ export function AllNewsClient({ initialNews, totalCount: serverTotalCount }: All
                       </button>
                     )}
 
-                    {/* Breaking News Pulse Badge */}
-                    {item.is_breaking && (
-                      <div className="absolute top-2.5 right-2.5">
+                    {/* Badges: Breaking News & Home Page */}
+                    <div className="absolute top-2.5 right-2.5 flex flex-col items-end gap-1 z-10 pointer-events-none">
+                      {item.is_breaking && (
                         <span className="bg-red-600 text-white text-[9px] font-mono font-bold px-2 py-0.5 rounded-full uppercase shadow-xs flex items-center gap-1 animate-pulse">
                           <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
                           BREAKING
                         </span>
-                      </div>
-                    )}
+                      )}
+                      {item.is_featured && (
+                        <span className="bg-emerald-600 text-white text-[9px] font-mono font-bold px-2 py-0.5 rounded-full uppercase shadow-xs flex items-center gap-1">
+                          HOME PAGE
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   {/* Card Content Area */}
@@ -807,18 +816,64 @@ export function AllNewsClient({ initialNews, totalCount: serverTotalCount }: All
                 )}
               </div>
 
-              {/* Breaking News Checkbox */}
-              <div className="flex items-center gap-2.5 pt-1">
-                <input
-                  type="checkbox"
-                  id="edit_breaking"
-                  checked={editFormData.isBreaking}
-                  onChange={(e) => setEditFormData({ ...editFormData, isBreaking: e.target.checked })}
-                  className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
-                />
-                <label htmlFor="edit_breaking" className="text-text-secondary cursor-pointer font-semibold">
-                  Mark as Breaking News (முக்கிய செய்தி - shows on live ticker)
-                </label>
+              {/* Editorial Placement: Breaking News & Home Page Checkboxes */}
+              <div className="bg-[#f0fdf4] border border-emerald-200/80 rounded-xl p-3.5 space-y-2.5">
+                <span className="text-[10px] font-heading font-bold uppercase tracking-wider text-emerald-900 block">
+                  Editorial Placements & Live Visibility
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {/* Breaking News Checkbox */}
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setEditFormData({ ...editFormData, isBreaking: !editFormData.isBreaking })}
+                    onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setEditFormData({ ...editFormData, isBreaking: !editFormData.isBreaking }); } }}
+                    className={`flex items-start gap-2.5 p-2.5 rounded-lg border cursor-pointer transition-colors select-none ${editFormData.isBreaking ? 'bg-red-50/80 border-red-400' : 'bg-white border-gray-200 hover:border-gray-300'}`}
+                  >
+                    <input
+                      type="checkbox"
+                      id="edit_breaking"
+                      checked={editFormData.isBreaking}
+                      onChange={(e) => setEditFormData({ ...editFormData, isBreaking: e.target.checked })}
+                      onClick={(e) => e.stopPropagation()}
+                      className="mt-0.5 w-4 h-4 rounded border-gray-300 text-red-600 focus:ring-red-500 cursor-pointer"
+                    />
+                    <div className="text-xs pointer-events-none">
+                      <span className="font-semibold text-dark block">
+                        🚨 Mark as Breaking News
+                      </span>
+                      <span className="text-[11px] text-text-secondary">
+                        (முக்கிய செய்தி - live ticker)
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Home Page Checkbox */}
+                  <div
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => setEditFormData({ ...editFormData, isFeatured: !editFormData.isFeatured })}
+                    onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setEditFormData({ ...editFormData, isFeatured: !editFormData.isFeatured }); } }}
+                    className={`flex items-start gap-2.5 p-2.5 rounded-lg border cursor-pointer transition-colors select-none ${editFormData.isFeatured ? 'bg-emerald-50/80 border-emerald-500' : 'bg-white border-gray-200 hover:border-gray-300'}`}
+                  >
+                    <input
+                      type="checkbox"
+                      id="edit_featured"
+                      checked={editFormData.isFeatured}
+                      onChange={(e) => setEditFormData({ ...editFormData, isFeatured: e.target.checked })}
+                      onClick={(e) => e.stopPropagation()}
+                      className="mt-0.5 w-4 h-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                    />
+                    <div className="text-xs pointer-events-none">
+                      <span className="font-semibold text-dark block">
+                        🏠 Show on Home Page
+                      </span>
+                      <span className="text-[11px] text-text-secondary">
+                        (முகப்புப் பக்கம் - Top Stories)
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Action Buttons */}

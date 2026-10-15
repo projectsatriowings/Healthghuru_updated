@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { FloatingFooterAd } from "@/components/ads/FloatingFooterAd";
 import { PopupAdModal } from "@/components/ads/PopupAdModal";
 import { AuthModal } from "@/components/auth/AuthModal";
+import { UserVisitTracker } from "@/components/analytics/UserVisitTracker";
 
 export default function ConditionalLayout({
   children,
@@ -31,6 +32,7 @@ export default function ConditionalLayout({
 
   return (
     <>
+      {!isExcluded && <UserVisitTracker />}
       {!isExcluded && navbar}
       <main className="flex-grow">
         {children}
