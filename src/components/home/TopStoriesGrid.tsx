@@ -64,9 +64,9 @@ export function TopStoriesGrid({
         <div className="flex items-center justify-between pb-3.5 mb-6 relative">
           <div className="flex items-center gap-2.5">
             <span className="w-4 h-4 rounded-md bg-gradient-to-br from-[#16A34A] via-[#22c55e] to-[#f06d2f] shadow-sm shadow-emerald-600/30 flex items-center justify-center text-white text-[9px] font-black">✦</span>
-            <h2 className="font-heading font-extrabold text-xl sm:text-2xl text-slate-900 uppercase tracking-wide">
+            <h1 className="font-heading font-extrabold text-xl sm:text-2xl text-slate-900 uppercase tracking-wide">
               {title || "TOP STORIES & ANALYSIS"}
-            </h2>
+            </h1>
           </div>
           <span className="text-xs font-mono font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/80 hidden sm:inline">
             UPDATED CONTINUOUSLY • CLINICALLY REVIEWED
