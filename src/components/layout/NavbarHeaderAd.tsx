@@ -168,7 +168,6 @@ export function NavbarHeaderAd({ isMobile = false }: NavbarHeaderAdProps) {
                   fill
                   sizes="32px"
                   className="object-cover"
-                  unoptimized
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-emerald-900 text-white font-bold text-[9px]">
@@ -228,7 +227,6 @@ export function NavbarHeaderAd({ isMobile = false }: NavbarHeaderAdProps) {
                   fill
                   sizes="48px"
                   className="object-cover"
-                  unoptimized
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-emerald-900 text-white font-bold text-xs">

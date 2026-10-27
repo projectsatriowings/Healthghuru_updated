@@ -28,6 +28,7 @@ import {
   Lock,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ObfuscatedEmail } from '@/components/ui/ObfuscatedEmail';
 
 const INQUIRY_CATEGORIES = [
   { id: 'General Inquiry', label: 'General Inquiry', icon: HeartHandshake },
@@ -278,13 +279,11 @@ export function ContactClient() {
               </p>
             </div>
             <div className="pt-4 mt-2 border-t border-slate-100">
-              <a
-                href="mailto:editor@healthghuru.in"
+              <ObfuscatedEmail
+                user="editor"
+                domain="healthghuru.in"
                 className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-heading font-bold text-[#16A34A] hover:text-[#15803D] transition-colors"
-              >
-                <span>editor@healthghuru.in</span>
-                <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-              </a>
+              />
             </div>
           </motion.div>
 
@@ -338,13 +337,11 @@ export function ContactClient() {
               </p>
             </div>
             <div className="pt-4 mt-2 border-t border-slate-100">
-              <a
-                href="mailto:info@healthghuru.in"
+              <ObfuscatedEmail
+                user="info"
+                domain="healthghuru.in"
                 className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-heading font-bold text-blue-600 hover:text-blue-700 transition-colors"
-              >
-                <span>info@healthghuru.in</span>
-                <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-              </a>
+              />
             </div>
           </motion.div>
 
@@ -398,12 +395,11 @@ export function ContactClient() {
                         <div className="text-[10.5px] font-bold text-emerald-800 uppercase tracking-wider font-heading">
                           General Inquiries
                         </div>
-                        <a
-                          href="mailto:info@healthghuru.in"
+                        <ObfuscatedEmail
+                          user="info"
+                          domain="healthghuru.in"
                           className="font-mono font-bold text-slate-900 hover:text-[#16A34A] transition-colors text-sm truncate block"
-                        >
-                          info@healthghuru.in
-                        </a>
+                        />
                       </div>
                     </div>
                     <button

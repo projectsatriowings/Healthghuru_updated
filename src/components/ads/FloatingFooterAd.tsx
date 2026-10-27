@@ -164,14 +164,13 @@ export function FloatingFooterAd({ initialAd, category }: FloatingFooterAdProps)
         >
           {/* Large Creative Image */}
           {ad.image_url && (
-            <div className="relative w-full h-44 sm:h-48 rounded-2xl overflow-hidden border border-border shadow-inner bg-surface group-hover:scale-[1.02] transition-transform duration-300">
+            <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-border shadow-inner bg-surface group-hover:scale-[1.02] transition-transform duration-300">
               <Image
                 src={getSafeImageUrl(ad.image_url, 'advertisement')}
                 alt={ad.title}
                 fill
                 sizes="(max-width: 640px) 100vw, 360px"
                 className="object-cover"
-                unoptimized
               />
               <div className="absolute top-2.5 left-2.5 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full text-[10px] font-mono text-white flex items-center gap-1">
                 <ShieldCheck size={11} className="text-emerald-400" /> Health Partner

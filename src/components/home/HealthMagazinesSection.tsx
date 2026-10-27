@@ -77,12 +77,11 @@ export function HealthMagazinesSection({ magazines }: HealthMagazinesSectionProp
             >
               <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-gray-200 mb-3 shadow-sm">
                 <Image
-                  src={getSafeImageUrl(mag.cover_url || mag.image_url, 'magazine', 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80')}
+                  src={getSafeImageUrl(mag.cover_url || mag.image_url, 'magazine', 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&h=800&q=80')}
                   alt={mag.title}
                   fill
                   sizes="(max-width: 640px) 50vw, 25vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  unoptimized
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
                   <span className="text-white text-xs font-bold font-heading inline-flex items-center gap-1">

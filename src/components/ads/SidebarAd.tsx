@@ -146,14 +146,13 @@ export function SidebarAd({ initialAd, category, className = '', sticky = false 
       >
         {/* Creative Image */}
         {ad.image_url && (
-          <div className="relative w-full h-44 rounded-xl overflow-hidden border border-border bg-surface group-hover:scale-[1.02] transition-transform duration-300">
+          <div className="relative w-full aspect-[16/9] rounded-xl overflow-hidden border border-border bg-surface group-hover:scale-[1.02] transition-transform duration-300">
             <Image
               src={getSafeImageUrl(ad.image_url, 'advertisement')}
               alt={ad.title}
               fill
               sizes="(max-width: 1024px) 100vw, 320px"
               className="object-cover"
-              unoptimized
             />
           </div>
         )}

@@ -125,7 +125,6 @@ export function SponsoredEditorialSection() {
                   fill
                   sizes="(max-width: 768px) 100vw, 33vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  unoptimized
                 />
                 <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-black/70 backdrop-blur-xs text-[#ffd6c1] text-[10px] font-mono font-bold px-2 py-0.5 rounded">
                   <Sparkles size={11} className="text-[#f06d2f]" />

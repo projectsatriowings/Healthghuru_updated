@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { Plus_Jakarta_Sans, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
@@ -10,16 +9,9 @@ import { ToastProvider } from "@/components/providers/ToastProvider";
 import { DialogProvider } from "@/components/providers/DialogProvider";
 import { AuthProvider } from "@/components/providers/AuthProvider";
 import { AuthModalProvider } from "@/context/AuthModalContext";
+import { GoogleAnalyticsRouteChange } from "@/components/analytics/GoogleAnalytics";
 
-// Professional Display Font for high-impact headlines and titles
-const plusJakartaDisplay = Plus_Jakarta_Sans({
-  subsets: ["latin"],
-  variable: "--font-display",
-  weight: ["600", "700", "800"],
-  display: "swap",
-});
-
-// Professional Heading Font for clean section titles, cards, and UI
+// Professional Heading & Display Font for clean section titles, cards, and UI
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-heading",
@@ -43,7 +35,9 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://healthghuru.com';
+const siteUrl = process.env.NODE_ENV === 'production'
+  ? 'https://healthghuru.com'
+  : (process.env.NEXT_PUBLIC_SITE_URL || 'https://healthghuru.com');
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -94,21 +88,104 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const headersList = headers();
-  const host = headersList.get("x-host") || headersList.get("host") || "";
-  const pathname = headersList.get("x-pathname") || "";
-  const isAdminDomain = host.startsWith("admin.") || headersList.get("x-is-admin-domain") === "true";
-  const isExcluded = isAdminDomain || pathname.startsWith("/admin") || pathname.includes("/print");
+  const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-XXXXXXXXXX";
 
   return (
-    <html lang="en" suppressHydrationWarning className={`${plusJakartaDisplay.variable} ${plusJakarta.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${plusJakarta.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
+      <head>
+        {/* Google Analytics 4 (gtag.js) */}
+        <script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${gaMeasurementId}', {
+                page_path: window.location.pathname,
+              });
+            `,
+          }}
+        />
+        {/* Structured Data (JSON-LD) for Organization & WebSite */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "Organization",
+                  "@id": `${siteUrl}/#organization`,
+                  name: "HealthGhuru",
+                  url: siteUrl,
+                  logo: {
+                    "@type": "ImageObject",
+                    "@id": `${siteUrl}/#logo`,
+                    inLanguage: "en-US",
+                    url: `${siteUrl}/images/logo.png`,
+                    contentUrl: `${siteUrl}/images/logo.png`,
+                    width: 512,
+                    height: 512,
+                    caption: "HealthGhuru Logo",
+                  },
+                  image: {
+                    "@id": `${siteUrl}/#logo`,
+                  },
+                  description:
+                    "Science-backed wellness platform covering Nutrition, Sleep, Fitness and Mental Health. 20,000+ expert-reviewed articles.",
+                  sameAs: [
+                    "https://twitter.com/healthghuru",
+                    "https://www.facebook.com/healthghuru",
+                    "https://www.instagram.com/healthghuru",
+                    "https://www.linkedin.com/company/healthghuru",
+                  ],
+                  contactPoint: {
+                    "@type": "ContactPoint",
+                    contactType: "Customer Support",
+                    email: "info@healthghuru.com",
+                    areaServed: "Global",
+                    availableLanguage: ["English", "Hindi", "Tamil"],
+                  },
+                },
+                {
+                  "@type": "WebSite",
+                  "@id": `${siteUrl}/#website`,
+                  url: siteUrl,
+                  name: "HealthGhuru",
+                  description:
+                    "Science-backed wellness platform covering Nutrition, Sleep, Fitness and Mental Health.",
+                  publisher: {
+                    "@id": `${siteUrl}/#organization`,
+                  },
+                  inLanguage: "en-US",
+                  potentialAction: [
+                    {
+                      "@type": "SearchAction",
+                      target: {
+                        "@type": "EntryPoint",
+                        urlTemplate: `${siteUrl}/news?q={search_term_string}`,
+                      },
+                      "query-input": "required name=search_term_string",
+                    },
+                  ],
+                },
+              ],
+            }),
+          }}
+        />
+      </head>
       <body suppressHydrationWarning className="antialiased min-h-screen flex flex-col font-body">
+        <GoogleAnalyticsRouteChange gaId={gaMeasurementId} />
         <AuthProvider>
           <AuthModalProvider>
             <ToastProvider>
               <DialogProvider>
                 <SmoothScroll>
-                  <ConditionalLayout isExcluded={isExcluded} navbar={<Navbar />} footer={<Footer />}>
+                  <ConditionalLayout navbar={<Navbar />} footer={<Footer />}>
                     {children}
                   </ConditionalLayout>
                 </SmoothScroll>

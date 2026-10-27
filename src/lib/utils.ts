@@ -58,28 +58,49 @@ export function formatTimeAgo(dateInput: string | Date | undefined | null): stri
 }
 
 const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
-  cancer: '/images/nutrition_pillar.png',
-  heart: '/images/fitness_pillar.png',
-  diabetes: '/images/nutrition_pillar.png',
-  fitness: '/images/exercise_plank.png',
-  nutrition: '/images/nutrition_pillar.png',
-  pediatrics: '/images/nutrition_pillar.png',
-  mental: '/images/fitness_pillar.png',
-  ayurveda: '/images/nutrition_pillar.png',
+  cancer: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=1200&h=750&q=80',
+  heart: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1200&h=750&q=80',
+  cardiology: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1200&h=750&q=80',
+  diabetes: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1200&h=750&q=80',
+  fitness: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=1200&h=750&q=80',
+  nutrition: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=1200&h=750&q=80',
+  pediatrics: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=1200&h=750&q=80',
+  mental: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1200&h=750&q=80',
+  'mental health': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1200&h=750&q=80',
+  ayurveda: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1200&h=750&q=80',
+  "women's health": 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1200&h=750&q=80',
+  'womens-health': 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=1200&h=750&q=80',
+  medical: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1200&h=750&q=80',
+  research: 'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=1200&h=750&q=80',
+  hospital: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=1200&h=750&q=80',
+  magazine: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&h=800&q=80',
+  short: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&h=1067&q=80',
+  reels: 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&h=1067&q=80',
 };
+
+const DEFAULT_EDITORIAL_FALLBACK = 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=1200&h=750&q=80';
 
 /**
  * Sanitizes and validates image URLs. If the URL is empty, or is an expired/blocked
- * hotlinking Instagram/Facebook CDN link, it returns a verified health placeholder image.
+ * hotlinking Instagram/Facebook CDN link, it returns a verified health placeholder image
+ * with a standardized 16:10 aspect ratio matching editorial layouts.
  */
 export function getSafeImageUrl(
   url?: string | null,
   category?: string | null,
-  defaultFallback: string = '/images/fitness_pillar.png'
+  defaultFallback: string = DEFAULT_EDITORIAL_FALLBACK
 ): string {
   if (!url || typeof url !== 'string' || url.trim() === '') {
-    if (category && CATEGORY_FALLBACK_IMAGES[category.toLowerCase()]) {
-      return CATEGORY_FALLBACK_IMAGES[category.toLowerCase()];
+    if (category) {
+      const catKey = category.toLowerCase();
+      if (CATEGORY_FALLBACK_IMAGES[catKey]) {
+        return CATEGORY_FALLBACK_IMAGES[catKey];
+      }
+      for (const [key, fallbackUrl] of Object.entries(CATEGORY_FALLBACK_IMAGES)) {
+        if (catKey.includes(key)) {
+          return fallbackUrl;
+        }
+      }
     }
     return defaultFallback;
   }
@@ -99,10 +120,23 @@ export function getSafeImageUrl(
     trimmed.includes('fbcdn.net') ||
     trimmed.includes('instagram.f')
   ) {
-    if (category && CATEGORY_FALLBACK_IMAGES[category.toLowerCase()]) {
-      return CATEGORY_FALLBACK_IMAGES[category.toLowerCase()];
+    if (category) {
+      const catKey = category.toLowerCase();
+      if (CATEGORY_FALLBACK_IMAGES[catKey]) {
+        return CATEGORY_FALLBACK_IMAGES[catKey];
+      }
+      for (const [key, fallbackUrl] of Object.entries(CATEGORY_FALLBACK_IMAGES)) {
+        if (catKey.includes(key)) {
+          return fallbackUrl;
+        }
+      }
     }
     return defaultFallback;
+  }
+
+  // Auto-serve modern WebP for local legacy PNG/JPG assets in /images/
+  if (trimmed.startsWith('/images/') && (trimmed.endsWith('.png') || trimmed.endsWith('.jpg')) && !trimmed.includes('logo')) {
+    trimmed = trimmed.replace(/\.(png|jpg)$/, '.webp');
   }
 
   return trimmed;

@@ -134,7 +134,7 @@ function BlockRenderer({ block }: { block: ArticleBlock }) {
         <figure className="my-10">
           <div className="relative w-full rounded-2xl overflow-hidden shadow-md" style={{ aspectRatio: '16/9' }}>
             <Image
-              src={getSafeImageUrl(block.url, 'medical', '/images/nutrition_pillar.png')}
+              src={getSafeImageUrl(block.url, 'medical')}
               alt={block.alt || 'Article visual'}
               fill
               sizes="(max-width: 1024px) 100vw, 760px"

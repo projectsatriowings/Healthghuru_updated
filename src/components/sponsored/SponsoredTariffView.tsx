@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { ObfuscatedEmail } from '@/components/ui/ObfuscatedEmail';
 import {
   Send,
   Download,
@@ -284,13 +285,13 @@ export function SponsoredTariffView({ onSwitchToArticles }: SponsoredTariffViewP
               <span>{downloading ? 'Preparing Tariff...' : 'Download Tariff (PDF)'}</span>
             </button>
 
-            <a
-              href="mailto:partnerships@healthghuru.com?subject=Healthcare Sponsored Campaign Inquiry"
+            <ObfuscatedEmail
+              user="partnerships"
+              domain="healthghuru.com"
+              subject="Healthcare Sponsored Campaign Inquiry"
+              label="Contact Admin / Get Quote"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-50 hover:bg-emerald-100/80 text-emerald-900 border border-emerald-200/80 font-heading font-bold text-xs sm:text-sm transition-colors"
-            >
-              <Mail size={15} className="text-[#16A34A]" />
-              <span>Contact Admin / Get Quote</span>
-            </a>
+            />
           </div>
 
           {/* Published Stories Shortcut */}

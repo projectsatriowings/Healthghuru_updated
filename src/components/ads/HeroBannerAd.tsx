@@ -212,7 +212,7 @@ export function HeroBannerAd({ initialAd, category, className = '' }: HeroBanner
               target="_blank"
               rel="noopener noreferrer"
               onClick={handleClick}
-              className="relative w-full md:w-80 lg:w-96 h-48 sm:h-56 rounded-2xl overflow-hidden border border-white/20 shadow-2xl shrink-0 block group-hover:scale-[1.02] transition-transform duration-300 bg-black/40"
+              className="relative w-full md:w-80 lg:w-96 aspect-[16/9] rounded-2xl overflow-hidden border border-white/20 shadow-2xl shrink-0 block group-hover:scale-[1.02] transition-transform duration-300 bg-black/40"
             >
               <Image
                 src={getSafeImageUrl(ad.image_url, 'advertisement')}
@@ -220,7 +220,6 @@ export function HeroBannerAd({ initialAd, category, className = '' }: HeroBanner
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 320px, 384px"
                 className="object-cover"
-                unoptimized
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
               <div className="absolute bottom-3 right-3 bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] text-white flex items-center gap-1 font-heading">

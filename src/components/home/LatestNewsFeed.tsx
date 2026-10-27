@@ -301,7 +301,7 @@ export function LatestNewsFeed({ initialItems }: LatestNewsFeedProps) {
                       {/* Thumbnail Image */}
                       <Link
                         href={`/article/${slug}`}
-                        className="relative w-full sm:w-36 md:w-32 lg:w-36 h-36 sm:h-auto aspect-[16/10] sm:aspect-auto rounded-xl overflow-hidden shrink-0 bg-slate-100 block"
+                        className="relative w-full sm:w-36 md:w-36 lg:w-40 aspect-[16/10] rounded-xl overflow-hidden shrink-0 bg-slate-100 block"
                       >
                         <Image
                           src={imageSrc}
@@ -309,7 +309,6 @@ export function LatestNewsFeed({ initialItems }: LatestNewsFeedProps) {
                           fill
                           sizes="(max-width: 640px) 100vw, 150px"
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
-                          unoptimized
                         />
                       </Link>
 
@@ -410,7 +409,6 @@ export function LatestNewsFeed({ initialItems }: LatestNewsFeedProps) {
                     fill
                     sizes="(max-width: 1024px) 100vw, 340px"
                     className="object-cover hover:scale-105 transition-transform duration-500"
-                    unoptimized
                   />
                 </div>
               </div>

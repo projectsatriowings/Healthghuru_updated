@@ -15,9 +15,9 @@ export default function FeaturedArticle({ post }: { post?: any }) {
     <div className="py-8">
       <Card className="flex flex-col lg:flex-row overflow-hidden group h-full cursor-pointer p-0" hoverEffect={false}>
         {/* Left: Image */}
-        <div className="w-full lg:w-[55%] relative aspect-[16/9] lg:aspect-auto overflow-hidden">
+        <div className="w-full lg:w-[55%] relative aspect-[16/9] lg:min-h-[380px] overflow-hidden">
           <Image
-            src={getSafeImageUrl(post.hero_image_url || post.image_url, post.category, "/images/nutrition_pillar.png")}
+            src={getSafeImageUrl(post.hero_image_url || post.image_url, post.category)}
             alt={post.hero_image_alt || post.title}
             fill
             sizes="(max-width: 1024px) 100vw, 55vw"

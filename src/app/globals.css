@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 :root {
+  --font-display: var(--font-heading);
   /* Design Tokens */
   /* Brand Greens */
   --color-primary:        #16A34A;
@@ -86,6 +87,20 @@
   html, body {
     overflow-x: hidden;
     max-width: 100%;
+  }
+
+  /* Image Aspect Ratio Preservation & Anti-Distortion Rules */
+  img, video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Next.js Fill Images: Guarantee object-fit: cover across all containers */
+  img[data-nimg="fill"] {
+    object-fit: cover;
+    object-position: center;
+    max-width: none;
+    height: 100% !important;
   }
 
   .scrollbar-none::-webkit-scrollbar {

@@ -6,6 +6,20 @@ import { auth } from '@/lib/auth/auth.config';
 export default async function middleware(req: NextRequest) {
   const { nextUrl, headers } = req;
   const host = headers.get('host') || nextUrl.host || '';
+  const proto = headers.get('x-forwarded-proto') || 'https';
+
+  // 1. URL Canonicalization: 301 Permanent Redirect all 'www' and non-SSL traffic to canonical apex (https://healthghuru.com)
+  const isWww = host.toLowerCase().startsWith('www.');
+  const isHttp = proto === 'http' && !host.includes('localhost') && !host.includes('127.0.0.1');
+
+  if (isWww || isHttp) {
+    const cleanHost = host.replace(/^www\./i, '');
+    const canonicalUrl = new URL(
+      `${nextUrl.pathname}${nextUrl.search}`,
+      `https://${cleanHost}`
+    );
+    return NextResponse.redirect(canonicalUrl, 301);
+  }
 
   // Check if request is coming via admin subdomain (e.g. admin.healthghuru.com)
   const isAdminSubdomain = host.startsWith('admin.');

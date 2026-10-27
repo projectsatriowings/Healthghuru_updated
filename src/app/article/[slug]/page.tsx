@@ -22,6 +22,7 @@ import { BreakingNewsTicker } from '@/components/media/BreakingNewsTicker';
 import { getSafeImageUrl } from '@/lib/utils';
 
 import { getFallbackArticle } from '@/lib/fallbackArticles';
+import { ShareActions } from '@/components/community/ShareActions';
 
 export const dynamic = 'force-dynamic';
 
@@ -330,12 +331,17 @@ export default async function ArticlePage({
                 </div>
               </div>
 
-              {/* Source Tag */}
-              {article.source_name && (
-                <span className="bg-[#F5FAF5] text-[#2E7D32] px-2.5 py-1 rounded-md font-mono text-[11px] font-semibold border border-[#2E7D32]/20">
-                  Source: {article.source_name}
-                </span>
-              )}
+              {/* Source Tag & Share Actions */}
+              <div className="flex items-center gap-3">
+                {article.source_name && (
+                  <span className="bg-[#F5FAF5] text-[#2E7D32] px-2.5 py-1 rounded-md font-mono text-[11px] font-semibold border border-[#2E7D32]/20">
+                    Source: {article.source_name}
+                  </span>
+                )}
+                <div className="flex items-center gap-1.5">
+                  <ShareActions title={article.title} />
+                </div>
+              </div>
             </div>
 
             {/* Medical Reviewer Verification Box (Mandatory Section 39) */}
@@ -377,7 +383,6 @@ export default async function ArticlePage({
                     sizes="(max-width: 1024px) 100vw, 800px"
                     className="object-cover"
                     priority
-                    unoptimized
                   />
                 </div>
                 <div className="p-2.5 bg-gray-50 border-t border-gray-100 text-[11px] text-gray-500 font-mono flex items-center justify-between">
@@ -415,10 +420,12 @@ export default async function ArticlePage({
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {article.raw_metadata.gallery_images.map((imgUrl: string, idx: number) => (
                     <div key={idx} className="relative aspect-[4/3] rounded-xl overflow-hidden border border-gray-200 shadow-2xs group">
-                      <img
-                        src={imgUrl}
+                      <Image
+                        src={getSafeImageUrl(imgUrl, article.category)}
                         alt={`Photo ${idx + 1}`}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        fill
+                        sizes="(max-width: 640px) 50vw, 300px"
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
                   ))}

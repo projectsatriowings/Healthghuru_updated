@@ -57,12 +57,11 @@ export default async function MagazinesPage() {
               >
                 <div className="w-full aspect-[4/3] relative bg-surface">
                   <Image
-                    src={getSafeImageUrl(mag.image_url, mag.category || 'magazine', '/images/fitness_pillar.png')}
+                    src={getSafeImageUrl(mag.image_url, 'magazine')}
                     alt={mag.title}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                     className="object-cover"
-                    unoptimized
                   />
                   <div className="absolute top-3 left-3 bg-dark/80 backdrop-blur-sm text-white text-[10px] uppercase font-heading font-bold px-3 py-1 rounded-full">
                     {mag.category || 'Periodical'}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { ObfuscatedEmail } from "@/components/ui/ObfuscatedEmail";
 import {
   Heart,
   Activity,
@@ -206,12 +207,11 @@ export default function Footer() {
             <div className="space-y-1.5 text-xs text-slate-400">
               <p>
                 Email:{' '}
-                <a
-                  href="mailto:info@healthghuru.com"
+                <ObfuscatedEmail
+                  user="info"
+                  domain="healthghuru.com"
                   className="text-[#f06d2f] font-semibold hover:underline"
-                >
-                  info@healthghuru.com
-                </a>
+                />
               </p>
               <p className="text-slate-500">
                 Chennai, Tamil Nadu, India

@@ -26,6 +26,7 @@ import {
   AlertCircle
 } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { ObfuscatedEmail } from "@/components/ui/ObfuscatedEmail";
 
 const SECTIONS = [
   {
@@ -353,12 +354,11 @@ export default function TermsOfServicePage() {
                   <p className="text-[11px] text-text-secondary leading-relaxed mb-2">
                     Questions on platform terms or dispute resolution:
                   </p>
-                  <a
-                    href="mailto:legal@healthghuru.com"
+                  <ObfuscatedEmail
+                    user="legal"
+                    domain="healthghuru.com"
                     className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline font-mono"
-                  >
-                    <Mail size={12} /> legal@healthghuru.com
-                  </a>
+                  />
                 </div>
               </div>
             </div>
@@ -481,12 +481,13 @@ export default function TermsOfServicePage() {
                       Our legal and medical review team is available to assist you with any contractual questions or content syndication inquiries.
                     </p>
                   </div>
-                  <a
-                    href="mailto:legal@healthghuru.com?subject=Legal%20Inquiry%20-%20HealthGhuru"
+                  <ObfuscatedEmail
+                    user="legal"
+                    domain="healthghuru.com"
+                    subject="Legal Inquiry - HealthGhuru"
+                    label="Contact Legal Counsel"
                     className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-primary hover:bg-primary-dark text-white font-heading font-semibold text-xs sm:text-sm shrink-0 shadow-md hover:shadow-lg transition-all"
-                  >
-                    <Mail size={15} /> Contact Legal Counsel
-                  </a>
+                  />
                 </div>
               </div>
 

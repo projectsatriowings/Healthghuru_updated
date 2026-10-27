@@ -34,70 +34,70 @@ interface CategoryVisualConfig {
 
 const CATEGORY_VISUALS: Record<string, CategoryVisualConfig> = {
   fitness: {
-    image: '/images/glass_fitness.png',
+    image: '/images/glass_fitness.webp',
     orb1: 'from-emerald-200/50 via-teal-100/35 to-transparent',
     orb2: 'from-amber-100/40 via-orange-100/25 to-transparent',
     accentBar: 'from-emerald-500 to-[#f06d2f]',
     badgeBorder: 'from-emerald-400/35 via-emerald-200/40 to-orange-300/30',
   },
   nutrition: {
-    image: '/images/glass_nutrition.png',
+    image: '/images/glass_nutrition.webp',
     orb1: 'from-lime-200/50 via-emerald-100/35 to-transparent',
     orb2: 'from-amber-100/40 via-yellow-100/25 to-transparent',
     accentBar: 'from-lime-500 to-amber-500',
     badgeBorder: 'from-lime-400/35 via-emerald-200/40 to-amber-300/30',
   },
   heart: {
-    image: '/images/glass_heart.png',
+    image: '/images/glass_heart.webp',
     orb1: 'from-rose-200/50 via-red-100/35 to-transparent',
     orb2: 'from-emerald-100/40 via-teal-100/25 to-transparent',
     accentBar: 'from-rose-500 to-emerald-500',
     badgeBorder: 'from-rose-400/35 via-pink-200/40 to-emerald-300/30',
   },
   'mental-health': {
-    image: '/images/glass_mental_health.png',
+    image: '/images/glass_mental_health.webp',
     orb1: 'from-indigo-200/50 via-purple-100/35 to-transparent',
     orb2: 'from-emerald-100/40 via-sky-100/25 to-transparent',
     accentBar: 'from-indigo-500 to-emerald-500',
     badgeBorder: 'from-indigo-400/35 via-purple-200/40 to-emerald-300/30',
   },
   sleep: {
-    image: '/images/glass_mental_health.png',
+    image: '/images/glass_mental_health.webp',
     orb1: 'from-blue-200/50 via-indigo-100/35 to-transparent',
     orb2: 'from-teal-100/40 via-emerald-100/25 to-transparent',
     accentBar: 'from-blue-500 to-teal-500',
     badgeBorder: 'from-blue-400/35 via-indigo-200/40 to-teal-300/30',
   },
   cancer: {
-    image: '/images/glass_research_dna.png',
+    image: '/images/glass_research_dna.webp',
     orb1: 'from-teal-200/50 via-cyan-100/35 to-transparent',
     orb2: 'from-emerald-100/40 via-indigo-100/25 to-transparent',
     accentBar: 'from-teal-500 to-emerald-600',
     badgeBorder: 'from-teal-400/35 via-cyan-200/40 to-emerald-300/30',
   },
   diabetes: {
-    image: '/images/glass_nutrition.png',
+    image: '/images/glass_nutrition.webp',
     orb1: 'from-sky-200/50 via-teal-100/35 to-transparent',
     orb2: 'from-emerald-100/40 via-blue-100/25 to-transparent',
     accentBar: 'from-sky-500 to-emerald-500',
     badgeBorder: 'from-sky-400/35 via-teal-200/40 to-emerald-300/30',
   },
   'womens-health': {
-    image: '/images/glass_health_emblem.png',
+    image: '/images/glass_health_emblem.webp',
     orb1: 'from-pink-200/50 via-rose-100/35 to-transparent',
     orb2: 'from-emerald-100/40 via-amber-100/25 to-transparent',
     accentBar: 'from-pink-500 to-emerald-500',
     badgeBorder: 'from-pink-400/35 via-rose-200/40 to-emerald-300/30',
   },
   pediatrics: {
-    image: '/images/glass_health_emblem.png',
+    image: '/images/glass_health_emblem.webp',
     orb1: 'from-emerald-200/50 via-cyan-100/35 to-transparent',
     orb2: 'from-amber-100/40 via-orange-100/25 to-transparent',
     accentBar: 'from-emerald-500 to-amber-500',
     badgeBorder: 'from-emerald-400/35 via-cyan-200/40 to-amber-300/30',
   },
   research: {
-    image: '/images/glass_research_dna.png',
+    image: '/images/glass_research_dna.webp',
     orb1: 'from-cyan-200/50 via-emerald-100/35 to-transparent',
     orb2: 'from-blue-100/40 via-indigo-100/25 to-transparent',
     accentBar: 'from-cyan-500 to-emerald-500',
@@ -211,8 +211,51 @@ export default async function CategoryPage({
   };
   const listStories = items.slice(1);
 
+  const categoryJsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://healthghuru.com",
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Categories",
+            "item": "https://healthghuru.com/news",
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": categoryName,
+            "item": `https://healthghuru.com/category/${cleanSlug}`,
+          },
+        ],
+      },
+      {
+        "@type": "CollectionPage",
+        "name": `${categoryName} News & Clinical Guides | HealthGhuru`,
+        "url": `https://healthghuru.com/category/${cleanSlug}`,
+        "description": `Evidence-based reporting, clinical research breakthroughs, and validated wellness guides in ${categoryName}.`,
+        "isPartOf": {
+          "@id": "https://healthghuru.com/#website",
+        },
+      },
+    ],
+  };
+
   return (
     <div className="w-full bg-[#f8faf8] min-h-screen">
+      {/* Category JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(categoryJsonLd) }}
+      />
       {/* Breaking News */}
       <BreakingNewsTicker items={breakingRes} />
 

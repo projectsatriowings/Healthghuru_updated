@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { ScrollReveal } from '@/components/ui/ScrollReveal';
+import { ObfuscatedEmail } from '@/components/ui/ObfuscatedEmail';
 
 export const metadata: Metadata = {
   title: 'Editorial Medical Review Standards & Clinical Integrity | HealthGhuru',
@@ -264,9 +265,11 @@ export default function MedicalReviewPage() {
             </div>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
               We hold ourselves to transparent accountability. If you identify a factual discrepancy, outdated clinical trial reference, or formatting error, please notify our medical editorial desk at{' '}
-              <a href="mailto:editorial@healthghuru.com" className="text-[#16A34A] font-bold hover:underline">
-                editorial@healthghuru.com
-              </a>
+              <ObfuscatedEmail
+                user="editorial"
+                domain="healthghuru.com"
+                className="text-[#16A34A] font-bold hover:underline"
+              />
               . Corrections are investigated and updated promptly.
             </p>
           </div>

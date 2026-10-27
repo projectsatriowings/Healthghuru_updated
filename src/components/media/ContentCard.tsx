@@ -112,7 +112,11 @@ export function ContentCard({ item, layout = 'standard', priority = false }: Con
     return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
-  const displayImage = imageError || !item.image_url ? '/images/exercise_plank.png' : getSafeImageUrl(item.image_url, item.category);
+  const displayImage = imageError || !item.image_url 
+    ? (layout === 'short' 
+        ? 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&h=1067&q=80' 
+        : getSafeImageUrl(null, item.category)) 
+    : getSafeImageUrl(item.image_url, item.category);
 
   // 1. Horizontal List Layout
   if (layout === 'horizontal') {
@@ -132,7 +136,6 @@ export function ContentCard({ item, layout = 'standard', priority = false }: Con
             sizes="(max-width: 640px) 100vw, 192px"
             onError={() => setImageError(true)}
             className="object-cover group-hover:scale-105 transition-transform duration-500"
-            unoptimized
           />
           {isVideo && (
             <div className="absolute inset-0 bg-black/30 flex items-center justify-center transition-colors group-hover:bg-black/40">
@@ -200,7 +203,6 @@ export function ContentCard({ item, layout = 'standard', priority = false }: Con
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             onError={() => setImageError(true)}
             className="object-cover group-hover:scale-105 transition-transform duration-500"
-            unoptimized
           />
 
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80" />
@@ -264,7 +266,6 @@ export function ContentCard({ item, layout = 'standard', priority = false }: Con
               priority={priority}
               onError={() => setImageError(true)}
               className="object-cover group-hover:scale-105 transition-transform duration-500"
-              unoptimized
             />
 
             {/* Gradient vignette */}

@@ -86,7 +86,7 @@ export function TopStoriesGrid({
               className="group relative block w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-900 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100/80"
             >
               {/* Full Bleed Image with Clear, Vivid Lighting */}
-              <div className="relative min-h-[400px] sm:min-h-[460px] lg:min-h-[500px] w-full overflow-hidden">
+              <div className="relative aspect-[4/3] sm:aspect-[16/10] lg:aspect-[16/11] min-h-[400px] sm:min-h-[460px] lg:min-h-[500px] w-full overflow-hidden">
                 <Image
                   src={heroImageUrl}
                   alt={primary.title || "Health and Wellness"}
@@ -94,7 +94,6 @@ export function TopStoriesGrid({
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                   priority
-                  unoptimized
                 />
                 {/* Lighter, bottom-focused gradient overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/55 via-50% to-transparent" />
@@ -165,14 +164,13 @@ export function TopStoriesGrid({
                       href={subHref}
                       className="group bg-white p-3 rounded-2xl border border-gray-200/90 shadow-xs hover:border-emerald-500 hover:shadow-md transition-all duration-300 flex items-center gap-3"
                     >
-                      <div className="relative w-20 h-20 sm:w-24 sm:h-20 rounded-xl overflow-hidden shrink-0 bg-slate-100">
+                      <div className="relative w-20 h-20 sm:w-24 sm:h-24 aspect-square rounded-xl overflow-hidden shrink-0 bg-slate-100">
                         <Image
                           src={subImage}
                           alt={sub.title}
                           fill
                           sizes="96px"
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          unoptimized
                         />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -240,7 +238,6 @@ export function TopStoriesGrid({
                           fill
                           sizes="96px"
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          unoptimized
                         />
                       </div>
                       <div className="flex-1 min-w-0 flex flex-col justify-between">

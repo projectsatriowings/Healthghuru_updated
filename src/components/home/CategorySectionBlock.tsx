@@ -28,42 +28,42 @@ interface CategorySectionBlockProps {
 
 const CATEGORY_SECTION_GRAPHICS: Record<string, { image: string; orb: string; accentColor: string }> = {
   cancer: {
-    image: '/images/glass_research_dna.png',
+    image: '/images/glass_research_dna.webp',
     orb: 'from-teal-100/50 via-cyan-50/30 to-transparent',
     accentColor: '#0d9488',
   },
   heart: {
-    image: '/images/glass_heart.png',
+    image: '/images/glass_heart.webp',
     orb: 'from-rose-100/50 via-red-50/30 to-transparent',
     accentColor: '#e11d48',
   },
   diabetes: {
-    image: '/images/glass_nutrition.png',
+    image: '/images/glass_nutrition.webp',
     orb: 'from-sky-100/50 via-teal-50/30 to-transparent',
     accentColor: '#0284c7',
   },
   'womens-health': {
-    image: '/images/glass_health_emblem.png',
+    image: '/images/glass_health_emblem.webp',
     orb: 'from-pink-100/50 via-rose-50/30 to-transparent',
     accentColor: '#db2777',
   },
   pediatrics: {
-    image: '/images/glass_health_emblem.png',
+    image: '/images/glass_health_emblem.webp',
     orb: 'from-amber-100/50 via-orange-50/30 to-transparent',
     accentColor: '#d97706',
   },
   'mental-health': {
-    image: '/images/glass_mental_health.png',
+    image: '/images/glass_mental_health.webp',
     orb: 'from-indigo-100/50 via-purple-50/30 to-transparent',
     accentColor: '#4f46e5',
   },
   fitness: {
-    image: '/images/glass_fitness.png',
+    image: '/images/glass_fitness.webp',
     orb: 'from-emerald-100/50 via-teal-50/30 to-transparent',
     accentColor: '#16a34a',
   },
   nutrition: {
-    image: '/images/glass_nutrition.png',
+    image: '/images/glass_nutrition.webp',
     orb: 'from-lime-100/50 via-emerald-50/30 to-transparent',
     accentColor: '#65a30d',
   },
@@ -396,6 +396,7 @@ export function CategorySectionBlock({
           src={secConfig.image}
           alt={title}
           fill
+          sizes="128px"
           className="object-contain drop-shadow-[0_10px_20px_rgba(22,163,74,0.1)]"
         />
       </div>
@@ -421,9 +422,9 @@ export function CategorySectionBlock({
             {/* Main Category Title */}
             <div className="flex items-center gap-3">
               <span className="w-2.5 h-7 rounded-full bg-gradient-to-b from-[#16A34A] to-[#22C55E] shrink-0" />
-              <h2 className="font-heading font-black text-2xl sm:text-3xl text-slate-900 tracking-tight uppercase">
+              <h3 className="font-heading font-black text-2xl sm:text-3xl text-slate-900 tracking-tight uppercase">
                 {title}
-              </h2>
+              </h3>
             </div>
 
             {description && (
@@ -482,14 +483,13 @@ export function CategorySectionBlock({
             className="group relative flex flex-col bg-white rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-200/80 hover:border-emerald-500/50 shadow-xs hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-1 transition-all duration-300"
           >
             {/* Hero Image Container with Floating Badges */}
-            <div className="relative aspect-[16/9] max-h-64 sm:max-h-80 w-full bg-slate-900 overflow-hidden">
+            <div className="relative aspect-[16/9] w-full bg-slate-900 overflow-hidden">
               <Image
                 src={getSafeImageUrl(featured.image_url, title)}
                 alt={featured.title}
                 fill
                 sizes="(max-width: 1024px) 100vw, 60vw"
                 className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                unoptimized
               />
 
               {/* Gradient Vignette for Depth & Contrast */}
@@ -520,9 +520,9 @@ export function CategorySectionBlock({
             {/* Lead Content Body */}
             <div className="p-4 sm:p-6 flex flex-col bg-white">
               <div>
-                <h3 className="font-heading font-black text-lg sm:text-2xl text-slate-900 group-hover:text-[#16A34A] transition-colors line-clamp-2 leading-snug">
+                <h4 className="font-heading font-black text-lg sm:text-2xl text-slate-900 group-hover:text-[#16A34A] transition-colors line-clamp-2 leading-snug">
                   {featured.title}
-                </h3>
+                </h4>
                 
                 <p className="text-xs sm:text-sm text-slate-600 line-clamp-2 mt-2 leading-relaxed">
                   {featured.excerpt}
@@ -572,14 +572,13 @@ export function CategorySectionBlock({
             >
               <Link href={`/article/${item.slug}`} className="flex gap-3 sm:gap-4 items-center">
                 {/* Thumbnail with Rank Badge */}
-                <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-24 rounded-xl overflow-hidden shrink-0 bg-slate-100 border border-slate-200/60 shadow-2xs">
+                <div className="relative w-20 h-20 sm:w-24 sm:h-24 md:w-24 md:h-24 aspect-square rounded-xl overflow-hidden shrink-0 bg-slate-100 border border-slate-200/60 shadow-2xs">
                   <Image
                     src={getSafeImageUrl(item.image_url, item.subcategory || title)}
                     alt={item.title}
                     fill
                     sizes="112px"
                     className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    unoptimized
                   />
                   {/* Rank Badge overlay on thumbnail */}
                   <div className="absolute top-1.5 left-1.5">

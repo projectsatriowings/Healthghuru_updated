@@ -14,30 +14,30 @@ import { HealthMagazinesSection } from '@/components/home/HealthMagazinesSection
 import { SponsoredEditorialSection } from '@/components/home/SponsoredEditorialSection';
 import { HomepageBuilderConfig, DEFAULT_HOMEPAGE_SECTIONS } from '@/lib/types/homepage-builder';
 
-// Enable ISR caching (30s) so the homepage serves instantaneously without running 22 transatlantic queries on every hit
-export const revalidate = 30;
+// Enable ISR caching (60s) so the homepage serves instantaneously from edge cache without running 18 transatlantic queries on every hit
+export const revalidate = 60;
 
 export default async function Home() {
   // Execute database queries in parallel for instant server-rendering performance
   const [
-    breakingNews,
-    topItems,
-    trendingItems,
-    latestNews,
-    cancerNews,
-    heartNews,
-    diabetesNews,
-    womensHealthNews,
-    pediatricsNews,
-    mentalHealthNews,
-    fitnessNews,
-    nutritionNews,
-    researchNews,
+    breakingNewsRaw,
+    topItemsRaw,
+    trendingItemsRaw,
+    latestNewsRaw,
+    cancerNewsRaw,
+    heartNewsRaw,
+    diabetesNewsRaw,
+    womensHealthNewsRaw,
+    pediatricsNewsRaw,
+    mentalHealthNewsRaw,
+    fitnessNewsRaw,
+    nutritionNewsRaw,
+    researchNewsRaw,
     doctorInterviews,
-    videoItems,
-    shortItems,
-    editorPicks,
-    mostReadItems,
+    videoItemsRaw,
+    shortItemsRaw,
+    editorPicksRaw,
+    mostReadItemsRaw,
     pollRes,
     pollOptionsRes,
     magazines,
@@ -245,6 +245,37 @@ export default async function Home() {
     `.catch(() => [])
   ]);
 
+  // Strip heavy article payloads (content, blocks, raw_metadata) from homepage cards to keep HTML size under budget
+  const sanitizeItem = (item: any) => {
+    if (!item) return item;
+    const { content, blocks, raw_metadata, description, ...rest } = item;
+    return {
+      ...rest,
+      excerpt: rest.excerpt
+        ? (rest.excerpt.length > 180 ? rest.excerpt.slice(0, 180) + '...' : rest.excerpt)
+        : (description ? (description.length > 180 ? description.slice(0, 180) + '...' : description) : undefined),
+    };
+  };
+  const sanitizeList = (list: any[]) => (Array.isArray(list) ? list.map(sanitizeItem) : []);
+
+  const breakingNews = sanitizeList(breakingNewsRaw);
+  const topItems = sanitizeList(topItemsRaw);
+  const trendingItems = sanitizeList(trendingItemsRaw);
+  const latestNews = sanitizeList(latestNewsRaw);
+  const cancerNews = sanitizeList(cancerNewsRaw);
+  const heartNews = sanitizeList(heartNewsRaw);
+  const diabetesNews = sanitizeList(diabetesNewsRaw);
+  const womensHealthNews = sanitizeList(womensHealthNewsRaw);
+  const pediatricsNews = sanitizeList(pediatricsNewsRaw);
+  const mentalHealthNews = sanitizeList(mentalHealthNewsRaw);
+  const fitnessNews = sanitizeList(fitnessNewsRaw);
+  const nutritionNews = sanitizeList(nutritionNewsRaw);
+  const researchNews = sanitizeList(researchNewsRaw);
+  const videoItems = sanitizeList(videoItemsRaw);
+  const shortItems = sanitizeList(shortItemsRaw);
+  const editorPicks = sanitizeList(editorPicksRaw);
+  const mostReadItems = sanitizeList(mostReadItemsRaw);
+
   // Construct Poll Data
   const pollData = pollRes.length > 0 ? {
     id: pollRes[0].id,
@@ -280,7 +311,7 @@ export default async function Home() {
           LIMIT 1
         `;
         if (specificHero.length > 0) {
-          featuredStory = specificHero[0];
+          featuredStory = sanitizeItem(specificHero[0]);
         }
       } catch (e) {
         console.error('Error fetching pinned hero:', e);
@@ -315,7 +346,7 @@ export default async function Home() {
           WHERE i.id = ANY(${missingIds}) AND i.status = 'published' AND i.deleted_at IS NULL
         `;
       }
-      const combinedPool = [...pinnedPool, ...additionalPinned];
+      const combinedPool = [...pinnedPool, ...sanitizeList(additionalPinned)];
       const ordered = builderConfig.pinnedTrending
         .map((p) => combinedPool.find((item: any) => item.id === p.id))
         .filter(Boolean);
@@ -351,7 +382,7 @@ export default async function Home() {
           WHERE i.id = ANY(${missingEp}) AND i.status = 'published' AND i.deleted_at IS NULL
         `;
       }
-      const combinedEp = [...epPool, ...additionalEp];
+      const combinedEp = [...epPool, ...sanitizeList(additionalEp)];
       const orderedEp = epIds
         .map((id) => combinedEp.find((item: any) => item.id === id))
         .filter(Boolean);
@@ -381,7 +412,7 @@ export default async function Home() {
           WHERE i.id = ANY(${missingFs}) AND i.status = 'published' AND i.deleted_at IS NULL
         `;
       }
-      const combinedFs = [...fsPool, ...additionalFs];
+      const combinedFs = [...fsPool, ...sanitizeList(additionalFs)];
       const orderedFs = fsIds
         .map((id) => combinedFs.find((s: any) => s.id === id))
         .filter(Boolean);
@@ -598,8 +629,32 @@ export default async function Home() {
     }
   };
 
+  const homeJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "HealthGhuru — Live Better. Feel Stronger.",
+    "url": "https://healthghuru.com",
+    "description": "Science-backed wellness platform covering Nutrition, Sleep, Fitness and Mental Health. 20,000+ expert-reviewed articles.",
+    "isPartOf": {
+      "@id": "https://healthghuru.com/#website",
+    },
+    "mainEntity": {
+      "@type": "ItemList",
+      "itemListElement": topItems.slice(0, 10).map((item: any, idx: number) => ({
+        "@type": "ListItem",
+        "position": idx + 1,
+        "url": `https://healthghuru.com/article/${item.slug}`,
+        "name": item.title,
+      })),
+    },
+  };
+
   return (
     <div className="w-full min-h-screen bg-surface flex flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
+      />
       {sectionsToRender.map((section) => renderSectionBlock(section))}
     </div>
   );

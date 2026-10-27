@@ -27,6 +27,7 @@ import {
   BookOpen
 } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
+import { ObfuscatedEmail } from "@/components/ui/ObfuscatedEmail";
 
 const SECTIONS = [
   {
@@ -359,12 +360,11 @@ export default function PrivacyPolicyPage() {
                   <p className="text-[11px] text-text-secondary leading-relaxed mb-2">
                     For GDPR access, export, or deletion requests:
                   </p>
-                  <a
-                    href="mailto:privacy@healthghuru.com"
+                  <ObfuscatedEmail
+                    user="privacy"
+                    domain="healthghuru.com"
                     className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline font-mono"
-                  >
-                    <Mail size={12} /> privacy@healthghuru.com
-                  </a>
+                  />
                 </div>
               </div>
             </div>
@@ -473,12 +473,13 @@ export default function PrivacyPolicyPage() {
                       Under GDPR and CCPA regulations, you can request an instant export or irreversible deletion of your Health Vault data anytime.
                     </p>
                   </div>
-                  <a
-                    href="mailto:privacy@healthghuru.com?subject=Data%20Request%20-%20HealthGhuru"
+                  <ObfuscatedEmail
+                    user="privacy"
+                    domain="healthghuru.com"
+                    subject="Data Request - HealthGhuru"
+                    label="Submit Privacy Request"
                     className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-primary hover:bg-primary-dark text-white font-heading font-semibold text-xs sm:text-sm shrink-0 shadow-md hover:shadow-lg transition-all"
-                  >
-                    <Mail size={15} /> Submit Privacy Request
-                  </a>
+                  />
                 </div>
               </div>
 

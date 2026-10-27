@@ -62,7 +62,6 @@ export function HealthVideosShortsSection({ videos, shorts }: HealthVideosShorts
                   fill
                   sizes="(max-width: 1024px) 100vw, 58vw"
                   className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-95"
-                  unoptimized
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent" />
 
@@ -99,7 +98,7 @@ export function HealthVideosShortsSection({ videos, shorts }: HealthVideosShorts
                   href={`/video/${vid.slug}`}
                   className="group bg-white/5 hover:bg-white/10 p-2.5 rounded-xl border border-emerald-900/60 transition-all flex gap-2.5 items-center"
                 >
-                  <div className="relative w-20 h-14 rounded-lg overflow-hidden shrink-0 bg-black">
+                  <div className="relative w-24 aspect-video rounded-lg overflow-hidden shrink-0 bg-black">
                     {vid.image_url && (
                       <Image
                         src={getSafeImageUrl(vid.image_url, vid.category)}
@@ -107,7 +106,6 @@ export function HealthVideosShortsSection({ videos, shorts }: HealthVideosShorts
                         fill
                         sizes="80px"
                         className="object-cover"
-                        unoptimized
                       />
                     )}
                     <div className="absolute inset-0 flex items-center justify-center bg-black/40">
@@ -151,12 +149,11 @@ export function HealthVideosShortsSection({ videos, shorts }: HealthVideosShorts
                   >
                     {short.image_url && (
                       <Image
-                        src={getSafeImageUrl(short.image_url, short.category)}
+                        src={getSafeImageUrl(short.image_url, 'short', 'https://images.unsplash.com/photo-1517838277536-f5f99be501cd?auto=format&fit=crop&w=600&h=1067&q=80')}
                         alt={short.title}
                         fill
                         sizes="(max-width: 640px) 144px, 160px"
                         className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-75 group-hover:opacity-90"
-                        unoptimized
                       />
                     )}
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />

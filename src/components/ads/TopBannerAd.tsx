@@ -130,7 +130,6 @@ export function TopBannerAd({ initialAd, category }: TopBannerAdProps) {
                   fill
                   sizes="36px"
                   className="object-cover"
-                  unoptimized
                 />
               </div>
             )}

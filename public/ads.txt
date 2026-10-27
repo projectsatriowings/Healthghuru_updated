@@ -1,0 +1,10 @@
+# HealthGhuru Authorized Digital Sellers (ads.txt)
+# Specification: IAB Tech Lab (https://iabtechlab.com/ads-txt/)
+# Domain: healthghuru.com
+
+# Contact & Advertising Management
+contact=partnerships@healthghuru.com
+
+# Google AdSense / Google Ad Manager
+# Replace pub-0000000000000000 with your Google AdSense Publisher ID (Account -> Settings -> Account Information)
+google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0

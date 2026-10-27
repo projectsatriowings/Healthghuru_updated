@@ -45,7 +45,7 @@ import { NavbarHeaderAd } from "./NavbarHeaderAd";
 import { useAuthModal } from "@/context/AuthModalContext";
 import { useSubscription } from "@/lib/hooks/useSubscription";
 import { PublicNotificationBell } from "@/components/notifications/PublicNotificationBell";
-import { formatTimeAgo } from "@/lib/utils";
+import { formatTimeAgo, getSafeImageUrl } from "@/lib/utils";
 
 const HEALTH_TOOLS_NAV = [
   { label: "BMI Calculator", href: "/health-tools/bmi-calculator", icon: Scale, desc: "Body Mass Index assessment" },
@@ -472,11 +472,15 @@ export default function Navbar() {
                             className="py-2.5 sm:py-3 flex items-start gap-2.5 sm:gap-3 group hover:bg-emerald-50/50 rounded-xl px-2 sm:px-2.5 transition-colors"
                           >
                             {item.image_url ? (
-                              <img
-                                src={item.image_url}
-                                alt={item.title}
-                                className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover shrink-0 border border-slate-200"
-                              />
+                              <div className="relative w-14 h-14 sm:w-16 sm:h-16 aspect-square rounded-xl overflow-hidden shrink-0 border border-slate-200">
+                                <Image
+                                  src={getSafeImageUrl(item.image_url, item.category)}
+                                  alt={item.title}
+                                  fill
+                                  sizes="64px"
+                                  className="object-cover"
+                                />
+                              </div>
                             ) : (
                               <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-emerald-100/60 text-[#16A34A] flex items-center justify-center font-bold text-xs shrink-0">
                                 HG

@@ -200,7 +200,6 @@ export function EditorsPicksMostRead({
                           fill
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                           className="object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                          unoptimized
                         />
                         
                         {/* Gradient Vignette for Depth */}
@@ -224,9 +223,9 @@ export function EditorsPicksMostRead({
 
                       {/* Title */}
                       <Link href={`/article/${slug}`} className="block">
-                        <h3 className="font-heading font-bold text-xs sm:text-[13.5px] text-slate-900 group-hover:text-[#16A34A] transition-colors line-clamp-2 leading-snug">
+                        <h4 className="font-heading font-bold text-xs sm:text-[13.5px] text-slate-900 group-hover:text-[#16A34A] transition-colors line-clamp-2 leading-snug">
                           {story.title}
-                        </h3>
+                        </h4>
                       </Link>
 
                       {/* Excerpt */}
@@ -266,9 +265,9 @@ export function EditorsPicksMostRead({
                   <Flame size={18} className="animate-pulse" />
                 </div>
                 <div>
-                  <h2 className="font-heading font-black text-base sm:text-lg text-slate-900 tracking-tight uppercase">
+                  <h3 className="font-heading font-black text-base sm:text-lg text-slate-900 tracking-tight uppercase">
                     {mostReadTitle || "MOST READ THIS WEEK"}
-                  </h2>
+                  </h3>
                 </div>
               </div>
 

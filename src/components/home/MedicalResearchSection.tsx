@@ -24,9 +24,10 @@ export function MedicalResearchSection({ researchItems }: MedicalResearchSection
       {/* Decorative 3D Glass DNA Image - Contained Safely Inside Card Boundary */}
       <div className="hidden lg:flex absolute right-6 top-6 w-28 h-28 xl:w-32 xl:h-32 pointer-events-none z-0 items-center justify-center opacity-25 group-hover/research:opacity-50 group-hover/research:scale-105 transition-all duration-700">
         <Image
-          src="/images/glass_research_dna.png"
+          src="/images/glass_research_dna.webp"
           alt="Medical Research DNA"
           fill
+          sizes="128px"
           className="object-contain drop-shadow-[0_10px_20px_rgba(20,184,166,0.15)]"
         />
       </div>
@@ -97,7 +98,6 @@ export function MedicalResearchSection({ researchItems }: MedicalResearchSection
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover group-hover/card:scale-105 transition-transform duration-500 opacity-90 group-hover/card:opacity-100"
-                    unoptimized
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-black/20 to-transparent pointer-events-none" />
 
