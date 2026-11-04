@@ -19,6 +19,7 @@ import {
   Check,
   AlertCircle,
   Sparkles,
+  Eye,
 } from 'lucide-react';
 
 interface NewsItem {
@@ -34,6 +35,7 @@ interface NewsItem {
   is_breaking?: boolean;
   is_featured?: boolean;
   raw_metadata?: any;
+  view_count?: number;
 }
 
 interface AllNewsClientProps {
@@ -599,24 +601,35 @@ export function AllNewsClient({ initialNews, totalCount: serverTotalCount }: All
                   </div>
                 </div>
 
-                {/* Card Lower: Clock + Live View + Action Buttons */}
+                {/* Card Lower: Clock + Views Count + Live View + Action Buttons */}
                 <div className="p-4 pt-0 space-y-3">
-                  {/* Elapsed Time & Live Page Link */}
+                  {/* Elapsed Time, Views Count & Live Page Link */}
                   <div className="flex items-center justify-between text-[11px] text-text-muted font-mono pt-2 border-t border-gray-100">
                     <span className="inline-flex items-center gap-1 text-text-secondary">
                       <Clock size={12} className="text-text-muted" />
                       <span>{timeAgo(item.published_at)}</span>
                     </span>
 
-                    <Link
-                      href={`/article/${item.slug}`}
-                      target="_blank"
-                      className="text-text-muted hover:text-primary inline-flex items-center gap-1 transition-colors font-sans font-medium"
-                      title="View live article"
-                    >
-                      <span>View</span>
-                      <ExternalLink size={11} />
-                    </Link>
+                    <div className="flex items-center gap-2.5">
+                      {/* News-wise views count */}
+                      <span
+                        className="inline-flex items-center gap-1 text-emerald-800 bg-emerald-50 border border-emerald-200/60 px-2 py-0.5 rounded-md font-mono font-bold text-[11px]"
+                        title={`${new Intl.NumberFormat('en-US').format(item.view_count || 0)} views for this news article`}
+                      >
+                        <Eye size={11} className="text-emerald-600" />
+                        <span>{new Intl.NumberFormat('en-US').format(item.view_count || 0)} views</span>
+                      </span>
+
+                      <Link
+                        href={`/article/${item.slug}`}
+                        target="_blank"
+                        className="text-text-muted hover:text-primary inline-flex items-center gap-1 transition-colors font-sans font-medium"
+                        title="View live article"
+                      >
+                        <span>View</span>
+                        <ExternalLink size={11} />
+                      </Link>
+                    </div>
                   </div>
 
                   {/* Edit News & Delete News Buttons */}

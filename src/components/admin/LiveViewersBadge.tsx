@@ -4,6 +4,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Globe, Users, TrendingUp, Radio, ExternalLink, X, RefreshCw, Eye } from 'lucide-react';
 
 interface LiveVisitorsData {
+  allUsersCount?: number;
+  totalUsersCount?: number;
+  totalNewsViews?: number;
   activeViewers: number;
   realActiveSessions: number;
   todayUniqueVisits: number;
@@ -13,6 +16,9 @@ interface LiveVisitorsData {
 
 export function LiveViewersBadge() {
   const [data, setData] = useState<LiveVisitorsData>({
+    allUsersCount: 0,
+    totalUsersCount: 0,
+    totalNewsViews: 0,
     activeViewers: 0,
     realActiveSessions: 0,
     todayUniqueVisits: 0,
@@ -61,9 +67,11 @@ export function LiveViewersBadge() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
-  const count = data.activeViewers ?? 0;
+  const count = data.allUsersCount ?? data.totalUsersCount ?? data.activeViewers ?? 0;
   const formattedCount = new Intl.NumberFormat('en-US').format(count);
+  const formattedNewsViews = new Intl.NumberFormat('en-US').format(data.totalNewsViews ?? 0);
   const formattedToday = new Intl.NumberFormat('en-US').format(data.todayUniqueVisits ?? 0);
+  const formattedActive = new Intl.NumberFormat('en-US').format(data.realActiveSessions ?? 0);
   const viewerLabel = count === 1 ? 'Viewer' : 'Viewers';
 
   return (
@@ -72,7 +80,7 @@ export function LiveViewersBadge() {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        title="Real active visitor count across HealthGhuru portal"
+        title="Total user count across HealthGhuru portal"
         className="group relative inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#a1400e]/90 hover:bg-[#92370c] active:scale-98 text-white border border-white/20 shadow-md shadow-orange-950/20 transition-all duration-200 cursor-pointer select-none"
       >
         {/* Pulsing Green Dot (active if >= 1) */}
@@ -86,7 +94,7 @@ export function LiveViewersBadge() {
           <Globe size={14} className="text-[#38bdf8] drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]" />
         </span>
 
-        {/* Real Viewers Counter Text */}
+        {/* Real Viewers Counter Text (All user count) */}
         <span className="font-heading font-extrabold text-xs sm:text-[13px] tracking-wide text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
           {formattedCount} {viewerLabel}
         </span>
@@ -100,7 +108,7 @@ export function LiveViewersBadge() {
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
               <h3 className="font-heading font-extrabold text-sm text-slate-900">
-                Real-Time Visitor Telemetry
+                Visitor & User Telemetry
               </h3>
             </div>
             <div className="flex items-center gap-1.5">
@@ -125,29 +133,55 @@ export function LiveViewersBadge() {
 
           {/* Metrics Grid */}
           <div className="grid grid-cols-2 gap-3 my-4">
-            <div className="p-3.5 rounded-xl bg-gradient-to-br from-orange-50 to-amber-50/60 border border-orange-200/80">
-              <div className="flex items-center gap-1.5 text-[11px] font-heading font-bold text-orange-700 uppercase tracking-wider mb-1">
-                <Radio size={12} className="text-orange-600 animate-pulse" />
-                <span>Real Active</span>
+            <div className="p-3.5 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50/60 border border-emerald-200/80">
+              <div className="flex items-center gap-1.5 text-[11px] font-heading font-bold text-emerald-700 uppercase tracking-wider mb-1">
+                <Users size={12} className="text-emerald-600" />
+                <span>All Users</span>
               </div>
               <div className="text-2xl font-heading font-black text-slate-900">
                 {formattedCount}
+              </div>
+              <div className="text-[10px] text-emerald-800/80 mt-0.5 font-medium">
+                Total all-time user count
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50/60 border border-blue-200/80">
+              <div className="flex items-center gap-1.5 text-[11px] font-heading font-bold text-blue-700 uppercase tracking-wider mb-1">
+                <Eye size={12} className="text-blue-600" />
+                <span>News Views</span>
+              </div>
+              <div className="text-2xl font-heading font-black text-slate-900">
+                {formattedNewsViews}
+              </div>
+              <div className="text-[10px] text-blue-800/80 mt-0.5 font-medium">
+                Total views across all news
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-gradient-to-br from-orange-50 to-amber-50/60 border border-orange-200/80">
+              <div className="flex items-center gap-1.5 text-[11px] font-heading font-bold text-orange-700 uppercase tracking-wider mb-1">
+                <Radio size={12} className="text-orange-600 animate-pulse" />
+                <span>Active Now</span>
+              </div>
+              <div className="text-2xl font-heading font-black text-slate-900">
+                {formattedActive}
               </div>
               <div className="text-[10px] text-orange-800/80 mt-0.5 font-medium">
                 Browsing portal in past 2 mins
               </div>
             </div>
 
-            <div className="p-3.5 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50/60 border border-emerald-200/80">
-              <div className="flex items-center gap-1.5 text-[11px] font-heading font-bold text-emerald-700 uppercase tracking-wider mb-1">
-                <TrendingUp size={12} className="text-emerald-600" />
+            <div className="p-3.5 rounded-xl bg-gradient-to-br from-purple-50 to-pink-50/60 border border-purple-200/80">
+              <div className="flex items-center gap-1.5 text-[11px] font-heading font-bold text-purple-700 uppercase tracking-wider mb-1">
+                <TrendingUp size={12} className="text-purple-600" />
                 <span>Today Unique</span>
               </div>
               <div className="text-2xl font-heading font-black text-slate-900">
                 {formattedToday}
               </div>
-              <div className="text-[10px] text-emerald-800/80 mt-0.5 font-medium">
-                Unique visitors recorded today
+              <div className="text-[10px] text-purple-800/80 mt-0.5 font-medium">
+                Unique visitors today
               </div>
             </div>
           </div>

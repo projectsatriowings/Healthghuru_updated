@@ -28,21 +28,27 @@ export async function GET() {
       `;
     } catch {}
 
-    // 1. Fetch 100% REAL active unique visitors in the last 2 minutes
+    // 1. Fetch 100% REAL all-time unique user count (not daily-wise)
+    const allUsersRes = await sql`
+      SELECT count(DISTINCT id) as count 
+      FROM active_visitors
+    `.catch(() => [{ count: 0 }]);
+
+    // 2. Fetch 100% REAL active unique visitors in the last 2 minutes
     const activeRes = await sql`
       SELECT count(DISTINCT id) as count 
       FROM active_visitors 
       WHERE last_seen_at >= NOW() - INTERVAL '2 minutes'
     `.catch(() => [{ count: 0 }]);
 
-    // 2. Fetch 100% REAL today's unique visitors
+    // 3. Fetch 100% REAL today's unique visitors
     const todayRes = await sql`
       SELECT count(DISTINCT id) as count 
       FROM active_visitors 
       WHERE last_seen_at >= CURRENT_DATE
     `.catch(() => [{ count: 0 }]);
 
-    // 3. Fetch 100% REAL pages visited right now
+    // 4. Fetch 100% REAL pages visited right now
     const topPagesRes = await sql`
       SELECT page_path, count(DISTINCT id) as count
       FROM active_visitors
@@ -52,13 +58,25 @@ export async function GET() {
       LIMIT 8
     `.catch(() => []);
 
+    // 5. Fetch total news views across all published stories
+    const newsViewsRes = await sql`
+      SELECT COALESCE(SUM(view_count), 0) as total_views
+      FROM content_items
+      WHERE deleted_at IS NULL
+    `.catch(() => [{ total_views: 0 }]);
+
+    const allUsersCount = parseInt(allUsersRes[0]?.count || '0', 10);
     const realActiveCount = parseInt(activeRes[0]?.count || '0', 10);
     const realTodayCount = parseInt(todayRes[0]?.count || '0', 10);
+    const totalNewsViews = parseInt(newsViewsRes[0]?.total_views || '0', 10);
 
     return NextResponse.json(
       {
         success: true,
-        activeViewers: realActiveCount,
+        allUsersCount,
+        totalUsersCount: allUsersCount,
+        activeViewers: allUsersCount,
+        totalNewsViews,
         realActiveSessions: realActiveCount,
         todayUniqueVisits: realTodayCount,
         activePages: topPagesRes.map((p: any) => ({
@@ -79,6 +97,8 @@ export async function GET() {
     console.error('Error fetching live visitors in admin:', error);
     return NextResponse.json({
       success: true,
+      allUsersCount: 0,
+      totalUsersCount: 0,
       activeViewers: 0,
       realActiveSessions: 0,
       todayUniqueVisits: 0,

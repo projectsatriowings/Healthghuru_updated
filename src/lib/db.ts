@@ -1,4 +1,12 @@
+import dns from 'dns';
 import { neon } from '@neondatabase/serverless';
+
+// Ensure Node.js prioritizes IPv4 to prevent Windows/ISP IPv6 routing hangs (TypeError: fetch failed)
+try {
+  if (typeof dns.setDefaultResultOrder === 'function') {
+    dns.setDefaultResultOrder('ipv4first');
+  }
+} catch {}
 
 if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL environment variable is not defined');
@@ -18,4 +26,3 @@ const dbUrl = process.env.DATABASE_URL.includes('-pooler.')
 
 // Create a singleton instance of the sql query function
 export const sql = neon(dbUrl);
-

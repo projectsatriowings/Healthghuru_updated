@@ -64,9 +64,22 @@ export async function POST(req: NextRequest) {
         last_seen_at = NOW()
     `;
 
-    // Opportunistic cleanup of historical sessions older than 48 hours (1 out of every 50 pings)
-    if (Math.random() < 0.02) {
-      sql`DELETE FROM active_visitors WHERE last_seen_at < NOW() - INTERVAL '48 hours'`.catch(() => {});
+    // When a visitor reads an article, reliably increment that article's view_count
+    if (pagePath.startsWith('/article/')) {
+      const rawSlug = pagePath
+        .replace('/article/', '')
+        .split('?')[0]
+        .split('#')[0]
+        .trim();
+      const cleanSlug = decodeURIComponent(rawSlug).toLowerCase();
+      if (cleanSlug) {
+        sql`
+          UPDATE content_items 
+          SET view_count = COALESCE(view_count, 0) + 1 
+          WHERE (LOWER(slug) = ${cleanSlug} OR slug = ${rawSlug}) 
+            AND deleted_at IS NULL
+        `.catch(() => {});
+      }
     }
 
     return NextResponse.json({ success: true, timestamp: Date.now() });
