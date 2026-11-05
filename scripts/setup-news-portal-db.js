@@ -506,9 +506,9 @@ async function main() {
           ${item.quality_score},
           'published',
           NOW(),
-          1420,
-          310,
-          84
+          0,
+          0,
+          0
         );
       `);
       console.log('✓ Added core news story:', item.slug);
