@@ -6,6 +6,7 @@ import { Globe, Users, TrendingUp, Radio, ExternalLink, X, RefreshCw, Eye } from
 interface LiveVisitorsData {
   allUsersCount?: number;
   totalUsersCount?: number;
+  totalViews?: number;
   totalNewsViews?: number;
   activeViewers: number;
   realActiveSessions: number;
@@ -18,6 +19,7 @@ export function LiveViewersBadge() {
   const [data, setData] = useState<LiveVisitorsData>({
     allUsersCount: 0,
     totalUsersCount: 0,
+    totalViews: 0,
     totalNewsViews: 0,
     activeViewers: 0,
     realActiveSessions: 0,
@@ -67,12 +69,12 @@ export function LiveViewersBadge() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isOpen]);
 
-  const count = data.allUsersCount ?? data.totalUsersCount ?? data.activeViewers ?? 0;
-  const formattedCount = new Intl.NumberFormat('en-US').format(count);
-  const formattedNewsViews = new Intl.NumberFormat('en-US').format(data.totalNewsViews ?? 0);
+  const totalViews = data.totalNewsViews ?? data.totalViews ?? 0;
+  const formattedViews = new Intl.NumberFormat('en-US').format(totalViews);
+  const totalUsers = data.allUsersCount ?? data.totalUsersCount ?? 0;
+  const formattedUsers = new Intl.NumberFormat('en-US').format(totalUsers);
   const formattedToday = new Intl.NumberFormat('en-US').format(data.todayUniqueVisits ?? 0);
   const formattedActive = new Intl.NumberFormat('en-US').format(data.realActiveSessions ?? 0);
-  const viewerLabel = count === 1 ? 'Viewer' : 'Viewers';
 
   return (
     <div className="relative inline-block text-left" ref={popoverRef}>
@@ -80,13 +82,13 @@ export function LiveViewersBadge() {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        title="Total user count across HealthGhuru portal"
+        title="Total views across HealthGhuru portal"
         className="group relative inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#a1400e]/90 hover:bg-[#92370c] active:scale-98 text-white border border-white/20 shadow-md shadow-orange-950/20 transition-all duration-200 cursor-pointer select-none"
       >
         {/* Pulsing Green Dot (active if >= 1) */}
         <span className="relative flex h-2.5 w-2.5 shrink-0">
-          <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${count > 0 ? 'bg-[#4ade80] opacity-80' : 'bg-emerald-400 opacity-40'}`} />
-          <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${count > 0 ? 'bg-[#22c55e] ring-2 ring-emerald-300/40' : 'bg-emerald-500'}`} />
+          <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${data.realActiveSessions > 0 ? 'bg-[#4ade80] opacity-80' : 'bg-emerald-400 opacity-40'}`} />
+          <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${data.realActiveSessions > 0 ? 'bg-[#22c55e] ring-2 ring-emerald-300/40' : 'bg-emerald-500'}`} />
         </span>
 
         {/* Cyan Globe Icon */}
@@ -94,9 +96,9 @@ export function LiveViewersBadge() {
           <Globe size={14} className="text-[#38bdf8] drop-shadow-[0_1px_2px_rgba(0,0,0,0.4)]" />
         </span>
 
-        {/* Real Viewers Counter Text (All user count) */}
+        {/* Total Views Counter Text */}
         <span className="font-heading font-extrabold text-xs sm:text-[13px] tracking-wide text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
-          {formattedCount} {viewerLabel}
+          {formattedViews} Views
         </span>
       </button>
 
@@ -133,29 +135,29 @@ export function LiveViewersBadge() {
 
           {/* Metrics Grid */}
           <div className="grid grid-cols-2 gap-3 my-4">
+            <div className="p-3.5 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50/60 border border-blue-200/80">
+              <div className="flex items-center gap-1.5 text-[11px] font-heading font-bold text-blue-700 uppercase tracking-wider mb-1">
+                <Eye size={12} className="text-blue-600" />
+                <span>Total Views</span>
+              </div>
+              <div className="text-2xl font-heading font-black text-slate-900">
+                {formattedViews}
+              </div>
+              <div className="text-[10px] text-blue-800/80 mt-0.5 font-medium">
+                Total views across all news
+              </div>
+            </div>
+
             <div className="p-3.5 rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50/60 border border-emerald-200/80">
               <div className="flex items-center gap-1.5 text-[11px] font-heading font-bold text-emerald-700 uppercase tracking-wider mb-1">
                 <Users size={12} className="text-emerald-600" />
                 <span>All Users</span>
               </div>
               <div className="text-2xl font-heading font-black text-slate-900">
-                {formattedCount}
+                {formattedUsers}
               </div>
               <div className="text-[10px] text-emerald-800/80 mt-0.5 font-medium">
                 Total all-time user count
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50/60 border border-blue-200/80">
-              <div className="flex items-center gap-1.5 text-[11px] font-heading font-bold text-blue-700 uppercase tracking-wider mb-1">
-                <Eye size={12} className="text-blue-600" />
-                <span>News Views</span>
-              </div>
-              <div className="text-2xl font-heading font-black text-slate-900">
-                {formattedNewsViews}
-              </div>
-              <div className="text-[10px] text-blue-800/80 mt-0.5 font-medium">
-                Total views across all news
               </div>
             </div>
 

@@ -73,10 +73,11 @@ export async function GET() {
     return NextResponse.json(
       {
         success: true,
+        totalViews: totalNewsViews,
+        totalNewsViews,
+        activeViewers: totalNewsViews,
         allUsersCount,
         totalUsersCount: allUsersCount,
-        activeViewers: allUsersCount,
-        totalNewsViews,
         realActiveSessions: realActiveCount,
         todayUniqueVisits: realTodayCount,
         activePages: topPagesRes.map((p: any) => ({
