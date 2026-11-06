@@ -26,40 +26,52 @@ export default async function AdminDashboardPage() {
   await requireAdmin();
 
   // Run all independent analytics and chart queries in parallel
-  const [
-    totalContent,
-    totalArticles,
-    activeSources,
-    totalUsers,
-    totalCategories,
-    chartDataRaw,
-    recentIngestions,
-  ] = await Promise.all([
-    sql`SELECT count(*) FROM content_items WHERE status = 'published' AND deleted_at IS NULL`,
-    sql`SELECT count(*) FROM content_items WHERE content_type = 'article' AND status = 'published' AND deleted_at IS NULL`,
-    sql`SELECT count(*) FROM content_sources WHERE enabled = TRUE`,
-    sql`SELECT count(*) FROM users`,
-    sql`SELECT count(*) FROM content_categories WHERE is_enabled = TRUE`,
-    sql`
-      SELECT DATE(published_at) as date, COUNT(*) as count
-      FROM content_items
-      WHERE published_at >= CURRENT_DATE - INTERVAL '30 days' AND deleted_at IS NULL
-      GROUP BY DATE(published_at)
-      ORDER BY DATE(published_at) ASC
-    `,
-    sql`
-      SELECT id, title, category, published_at, source_name, content_type
-      FROM (
-        SELECT i.id, i.title, i.category, i.published_at, i.content_type,
-               COALESCE(s.name, 'HealthGuru Wire') as source_name
-        FROM content_items i
-        LEFT JOIN content_sources s ON i.source_id = s.id
-        WHERE i.status = 'published' AND i.deleted_at IS NULL
-        ORDER BY i.published_at DESC
-        LIMIT 5
-      ) r
-    `,
-  ]);
+  let totalContent: any[] = [{ count: '0' }];
+  let totalArticles: any[] = [{ count: '0' }];
+  let activeSources: any[] = [{ count: '0' }];
+  let totalUsers: any[] = [{ count: '0' }];
+  let totalCategories: any[] = [{ count: '0' }];
+  let chartDataRaw: any[] = [];
+  let recentIngestions: any[] = [];
+
+  try {
+    [
+      totalContent,
+      totalArticles,
+      activeSources,
+      totalUsers,
+      totalCategories,
+      chartDataRaw,
+      recentIngestions,
+    ] = await Promise.all([
+      sql`SELECT count(*) FROM content_items WHERE status = 'published' AND deleted_at IS NULL`,
+      sql`SELECT count(*) FROM content_items WHERE content_type = 'article' AND status = 'published' AND deleted_at IS NULL`,
+      sql`SELECT count(*) FROM content_sources WHERE enabled = TRUE`,
+      sql`SELECT count(*) FROM users`,
+      sql`SELECT count(*) FROM content_categories WHERE is_enabled = TRUE`,
+      sql`
+        SELECT DATE(published_at) as date, COUNT(*) as count
+        FROM content_items
+        WHERE published_at >= CURRENT_DATE - INTERVAL '30 days' AND deleted_at IS NULL
+        GROUP BY DATE(published_at)
+        ORDER BY DATE(published_at) ASC
+      `,
+      sql`
+        SELECT id, title, category, published_at, source_name, content_type
+        FROM (
+          SELECT i.id, i.title, i.category, i.published_at, i.content_type,
+                 COALESCE(s.name, 'HealthGuru Wire') as source_name
+          FROM content_items i
+          LEFT JOIN content_sources s ON i.source_id = s.id
+          WHERE i.status = 'published' AND i.deleted_at IS NULL
+          ORDER BY i.published_at DESC
+          LIMIT 5
+        ) r
+      `,
+    ]);
+  } catch (err) {
+    console.error('Error fetching admin dashboard metrics from db:', err);
+  }
 
   // Generate the last 30 days continuous chart data
   const chartData = [];

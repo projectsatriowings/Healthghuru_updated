@@ -32,45 +32,49 @@ export async function generateMetadata({
   params: { slug: string };
 }): Promise<Metadata> {
   const cleanSlug = decodeURIComponent(params.slug || '').trim().toLowerCase();
-  const items = await sql`
-    SELECT title, excerpt, description, image_url, category, author_name, published_at
-    FROM content_items
-    WHERE (LOWER(slug) = ${cleanSlug} OR slug = ${params.slug}) AND status = 'published'
-    LIMIT 1
-  `;
+  try {
+    const items = await sql`
+      SELECT title, excerpt, description, image_url, category, author_name, published_at
+      FROM content_items
+      WHERE (LOWER(slug) = ${cleanSlug} OR slug = ${params.slug}) AND status = 'published'
+      LIMIT 1
+    `;
 
-  if (items.length > 0) {
-    const item = items[0];
-    return {
-      title: `${item.title} | HealthGhuru News`,
-      description: item.excerpt || item.description,
-      alternates: {
-        canonical: `/article/${cleanSlug}`,
-      },
-      openGraph: {
-        title: item.title,
-        description: item.excerpt,
-        images: item.image_url ? [{ url: item.image_url }] : [],
-        type: 'article',
-        publishedTime: item.published_at,
-      },
-    };
-  }
+    if (items.length > 0) {
+      const item = items[0];
+      return {
+        title: `${item.title} | HealthGhuru News`,
+        description: item.excerpt || item.description,
+        alternates: {
+          canonical: `/article/${cleanSlug}`,
+        },
+        openGraph: {
+          title: item.title,
+          description: item.excerpt,
+          images: item.image_url ? [{ url: item.image_url }] : [],
+          type: 'article',
+          publishedTime: item.published_at,
+        },
+      };
+    }
 
-  // Check fallback articles table
-  const legacy = await sql`
-    SELECT title, excerpt, hero_image_url FROM articles 
-    WHERE LOWER(slug) = ${cleanSlug} OR slug = ${params.slug} 
-    LIMIT 1
-  `;
-  if (legacy.length > 0) {
-    return {
-      title: `${legacy[0].title} | HealthGhuru`,
-      description: legacy[0].excerpt,
-      alternates: {
-        canonical: `/article/${cleanSlug}`,
-      },
-    };
+    // Check fallback articles table
+    const legacy = await sql`
+      SELECT title, excerpt, hero_image_url FROM articles 
+      WHERE LOWER(slug) = ${cleanSlug} OR slug = ${params.slug} 
+      LIMIT 1
+    `;
+    if (legacy.length > 0) {
+      return {
+        title: `${legacy[0].title} | HealthGhuru`,
+        description: legacy[0].excerpt,
+        alternates: {
+          canonical: `/article/${cleanSlug}`,
+        },
+      };
+    }
+  } catch (err) {
+    console.error('Error fetching metadata from db:', err);
   }
 
   // Check fallback registry
@@ -108,27 +112,35 @@ export default async function ArticlePage({
   const cleanSlug = decodeURIComponent(params.slug || '').trim().toLowerCase();
 
   // 1. Fetch main article from content_items or articles
-  const [contentItems, legacyArticles, breakingRes] = await Promise.all([
-    sql`
-      SELECT i.*, s.name as source_name
-      FROM content_items i
-      LEFT JOIN content_sources s ON i.source_id = s.id
-      WHERE (LOWER(i.slug) = ${cleanSlug} OR i.slug = ${params.slug}) 
-        AND i.status = 'published' AND i.deleted_at IS NULL
-      LIMIT 1
-    `,
-    sql`
-      SELECT * FROM articles 
-      WHERE LOWER(slug) = ${cleanSlug} OR slug = ${params.slug} 
-      LIMIT 1
-    `,
-    sql`
-      SELECT id, title, slug, category, canonical_url, is_external
-      FROM content_items
-      WHERE is_breaking = TRUE AND status = 'published'
-      ORDER BY published_at DESC LIMIT 5
-    `
-  ]);
+  let contentItems: any[] = [];
+  let legacyArticles: any[] = [];
+  let breakingRes: any[] = [];
+
+  try {
+    [contentItems, legacyArticles, breakingRes] = await Promise.all([
+      sql`
+        SELECT i.*, s.name as source_name
+        FROM content_items i
+        LEFT JOIN content_sources s ON i.source_id = s.id
+        WHERE (LOWER(i.slug) = ${cleanSlug} OR i.slug = ${params.slug}) 
+          AND i.status = 'published' AND i.deleted_at IS NULL
+        LIMIT 1
+      `,
+      sql`
+        SELECT * FROM articles 
+        WHERE LOWER(slug) = ${cleanSlug} OR slug = ${params.slug} 
+        LIMIT 1
+      `,
+      sql`
+        SELECT id, title, slug, category, canonical_url, is_external
+        FROM content_items
+        WHERE is_breaking = TRUE AND status = 'published'
+        ORDER BY published_at DESC LIMIT 5
+      `
+    ]);
+  } catch (err) {
+    console.error('Error fetching article from db:', err);
+  }
 
   let article: any = null;
   if (contentItems.length > 0) {
@@ -184,19 +196,29 @@ export default async function ArticlePage({
   }
 
   // 2. Fetch related articles in same category
-  const relatedArticles = await sql`
-    SELECT id, title, slug, category, image_url, source_id, published_at,
-           (SELECT name FROM content_sources WHERE id = content_items.source_id) as source_name
-    FROM content_items
-    WHERE category = ${article.category} AND slug != ${article.slug} AND status = 'published'
-    ORDER BY published_at DESC
-    LIMIT 4
-  `;
+  let relatedArticles: any[] = [];
+  try {
+    relatedArticles = await sql`
+      SELECT id, title, slug, category, image_url, source_id, published_at,
+             (SELECT name FROM content_sources WHERE id = content_items.source_id) as source_name
+      FROM content_items
+      WHERE category = ${article.category} AND slug != ${article.slug} AND status = 'published'
+      ORDER BY published_at DESC
+      LIMIT 4
+    `;
+  } catch (err) {
+    console.error('Error fetching related articles from db:', err);
+  }
 
   // 3. Fetch doctor details if author is a doctor
-  const doctors = await sql`
-    SELECT * FROM doctors LIMIT 1
-  `;
+  let doctors: any[] = [];
+  try {
+    doctors = await sql`
+      SELECT * FROM doctors LIMIT 1
+    `;
+  } catch (err) {
+    console.error('Error fetching doctors from db:', err);
+  }
   const reviewingDoctor = doctors[0] || {
     name: "Dr. Arvind Deshmukh",
     specialization: "Cardiologist & Electrophysiologist",
