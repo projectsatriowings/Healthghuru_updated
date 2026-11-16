@@ -19,26 +19,54 @@ import { auth } from "@/lib/auth/auth.config";
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const posts = await sql`SELECT title, excerpt FROM articles WHERE slug = ${params.slug} AND status = 'published'`;
+  const posts = await sql`SELECT title, excerpt, hero_image_url FROM articles WHERE slug = ${params.slug} AND status = 'published'`;
   
-  let post;
+  let post: any = null;
   if (posts.length === 0) {
-    if (params.slug === 'boost-immune-system') {
-      post = { title: "Boost Your Immune System Naturally", excerpt: "Your immune system is your body's defense network. These 8 natural strategies will make it stronger." };
+    const fromContent = await sql`SELECT title, excerpt, image_url as hero_image_url FROM content_items WHERE slug = ${params.slug} AND status = 'published' LIMIT 1`;
+    if (fromContent.length > 0) {
+      post = fromContent[0];
+    } else if (params.slug === 'boost-immune-system') {
+      post = { title: "Boost Your Immune System Naturally", excerpt: "Your immune system is your body's defense network. These natural strategies make it stronger." };
     } else if (params.slug === 'sleep-quality-guide') {
       post = { title: "Why Sleep Quality Matters More Than Sleep Quantity", excerpt: "Eight hours of bad sleep is worse than six hours of deep, restorative sleep. Here's what the science says." };
     } else {
-      return { title: "Post Not Found" };
+      return { 
+        title: "Article", 
+        alternates: { canonical: `/blog/${params.slug}` } 
+      };
     }
   } else {
     post = posts[0];
   }
-  
+
+  const rawTitle = post.title.replace(/\s*\|\s*HealthGhuru.*$/i, '').trim();
+  const seoTitle = rawTitle.length > 45 ? `${rawTitle.slice(0, 42).trim()}...` : rawTitle;
+  let desc = (post.excerpt || rawTitle).trim();
+  if (desc.length > 155) desc = `${desc.slice(0, 150).trim()}...`;
+  else if (desc.length < 70) desc = `${desc}. Read expert health insights and wellness guides on HealthGhuru.`;
+
+  const img = post.hero_image_url || 'https://healthghuru.com/images/default_article.jpg';
+  const canonicalUrl = `https://healthghuru.com/blog/${params.slug}`;
+
   return {
-    title: `${post.title} | HealthGhuru Blog`,
-    description: post.excerpt,
+    title: seoTitle,
+    description: desc,
     alternates: {
       canonical: `/blog/${params.slug}`,
+    },
+    openGraph: {
+      title: rawTitle,
+      description: desc,
+      url: canonicalUrl,
+      type: 'article',
+      images: [{ url: img }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: rawTitle,
+      description: desc,
+      images: [img],
     },
   };
 }

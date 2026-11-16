@@ -45,18 +45,31 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const title = article.seo_title || `${article.title} | ${article.sponsor_name || 'HealthGhuru Partner'}`;
-  const description = article.seo_description || article.excerpt;
+  const rawTitle = (article.seo_title || article.title).replace(/\s*\|\s*HealthGhuru.*$/i, '').trim();
+  const seoTitle = rawTitle.length > 42 ? `${rawTitle.slice(0, 39).trim()}...` : rawTitle;
+  let desc = (article.seo_description || article.excerpt || rawTitle).trim();
+  if (desc.length > 155) desc = `${desc.slice(0, 150).trim()}...`;
+  else if (desc.length < 70) desc = `${desc}. Read verified partner story and medical updates on HealthGhuru.`;
+
+  const canonicalUrl = `https://healthghuru.com/sponsored-articles/${article.slug}`;
+  const img = article.featured_image || 'https://healthghuru.com/images/default_article.jpg';
 
   return {
-    title,
-    description,
+    title: seoTitle,
+    description: desc,
     openGraph: {
-      title,
-      description,
+      title: rawTitle,
+      description: desc,
+      url: canonicalUrl,
       type: 'article',
-      images: article.featured_image ? [article.featured_image] : [],
+      images: [{ url: img }],
       publishedTime: article.published_at || undefined,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: rawTitle,
+      description: desc,
+      images: [img],
     },
     alternates: {
       canonical: `/sponsored-articles/${article.slug}`,

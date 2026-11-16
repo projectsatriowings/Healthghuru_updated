@@ -18,8 +18,22 @@ import { getSafeImageUrl } from '@/lib/utils';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Doctor Directory & Medical Specialists | HealthGhuru',
-  description: 'Connect with verified chief consultants, oncologists, cardiologists, and pediatric specialists in the HealthGhuru Medical Network.',
+  title: 'Verified Doctors & Specialists',
+  description: 'Connect with verified oncologists, cardiologists, and pediatric specialists in the HealthGhuru Medical Network.',
+  alternates: {
+    canonical: '/doctors',
+  },
+  openGraph: {
+    title: 'Verified Doctors & Specialists',
+    description: 'Connect with verified oncologists, cardiologists, and pediatric specialists in the HealthGhuru Medical Network.',
+    url: 'https://healthghuru.com/doctors',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Verified Doctors & Specialists',
+    description: 'Connect with verified oncologists, cardiologists, and pediatric specialists in the HealthGhuru Medical Network.',
+  },
 };
 
 export default async function DoctorsPage({

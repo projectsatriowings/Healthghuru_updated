@@ -11,8 +11,22 @@ import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Health News | HealthGhuru — Verified Global Health & Medical Headlines',
-  description: 'Real-time health news, medical research updates, preventive care announcements, and evidence-based stories from verified medical sources.',
+  title: 'Latest Health & Medical News',
+  description: 'Real-time health news, medical research updates, and clinical breakthroughs from verified medical sources.',
+  alternates: {
+    canonical: '/news',
+  },
+  openGraph: {
+    title: 'Latest Health & Medical News',
+    description: 'Real-time health news, medical research updates, and clinical breakthroughs from verified medical sources.',
+    url: 'https://healthghuru.com/news',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Latest Health & Medical News',
+    description: 'Real-time health news, medical research updates, and clinical breakthroughs from verified medical sources.',
+  },
 };
 
 export default async function NewsPage({
@@ -67,6 +81,7 @@ export default async function NewsPage({
         <ScrollReveal>
           <div className="w-full flex flex-col items-center justify-center text-center border-b border-border pb-6">
             <SectionHeader
+              as="h1"
               eyebrow="Live Health News"
               title="Global Health & Medical Updates"
               subtitle="Curated from world health organizations, leading research institutes, and accredited publishers."

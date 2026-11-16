@@ -5,9 +5,22 @@ import { ShieldAlert, HeartPulse, Sparkles, CheckCircle2 } from 'lucide-react';
 import { HealthToolsGrid } from '@/components/health-tools/HealthToolsGrid';
 
 export const metadata: Metadata = {
-  title: 'Health Tools & Calculators | HealthGuru',
-  description:
-    'Simple tools to help you understand and manage your health. Evidence-based BMI, BMR, Calorie, Hydration, Sleep, and Heart Rate calculators.',
+  title: 'Health Calculators & Tools',
+  description: 'Evidence-based BMI, BMR, calorie, hydration, sleep, and heart rate calculators.',
+  alternates: {
+    canonical: '/health-tools',
+  },
+  openGraph: {
+    title: 'Health Calculators & Tools',
+    description: 'Evidence-based BMI, BMR, calorie, hydration, sleep, and heart rate calculators.',
+    url: 'https://healthghuru.com/health-tools',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Health Calculators & Tools',
+    description: 'Evidence-based BMI, BMR, calorie, hydration, sleep, and heart rate calculators.',
+  },
 };
 
 export default function HealthToolsLandingPage() {

@@ -16,8 +16,22 @@ import Link from "next/link";
 import { ArrowRight, Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Stay Healthy | HealthGhuru — Evidence-Based Wellness Pillars",
-  description: "Evidence-based tips, scientific guides, and practical strategies for Nutrition, Fitness, Mental Health, and Sleep.",
+  title: 'Stay Healthy & Wellness Pillars',
+  description: 'Evidence-based tips and practical strategies for nutrition, fitness, mental health, and sleep.',
+  alternates: {
+    canonical: '/stay-healthy',
+  },
+  openGraph: {
+    title: 'Stay Healthy & Wellness Pillars',
+    description: 'Evidence-based tips and practical strategies for nutrition, fitness, mental health, and sleep.',
+    url: 'https://healthghuru.com/stay-healthy',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Stay Healthy & Wellness Pillars',
+    description: 'Evidence-based tips and practical strategies for nutrition, fitness, mental health, and sleep.',
+  },
 };
 
 export const dynamic = 'force-dynamic';

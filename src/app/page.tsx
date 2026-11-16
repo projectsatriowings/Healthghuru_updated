@@ -655,6 +655,8 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
       />
+      {/* Accessible semantic H1 for homepage SEO structure */}
+      <h1 className="sr-only">HealthGhuru — Evidence-Based Health News & Clinical Wellness</h1>
       {sectionsToRender.map((section) => renderSectionBlock(section))}
     </div>
   );

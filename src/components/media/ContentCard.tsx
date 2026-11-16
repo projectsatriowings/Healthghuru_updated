@@ -118,6 +118,8 @@ export function ContentCard({ item, layout = 'standard', priority = false }: Con
         : getSafeImageUrl(null, item.category)) 
     : getSafeImageUrl(item.image_url, item.category);
 
+  const imageTitle = item.title.length > 90 ? `${item.title.slice(0, 87).trim()}...` : item.title;
+
   // 1. Horizontal List Layout
   if (layout === 'horizontal') {
     return (
@@ -131,7 +133,8 @@ export function ContentCard({ item, layout = 'standard', priority = false }: Con
         <div className="w-full sm:w-48 aspect-[16/10] relative rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200/60 block">
           <Image
             src={displayImage}
-            alt={item.title}
+            alt={imageTitle}
+            title={imageTitle}
             fill
             sizes="(max-width: 640px) 100vw, 192px"
             onError={() => setImageError(true)}
@@ -198,7 +201,8 @@ export function ContentCard({ item, layout = 'standard', priority = false }: Con
         <div className="w-full aspect-[9/16] relative rounded-2xl overflow-hidden bg-slate-950 border border-slate-200/80 shadow-xs group-hover:shadow-xl group-hover:-translate-y-1.5 transition-all duration-300 block">
           <Image
             src={displayImage}
-            alt={item.title}
+            alt={imageTitle}
+            title={imageTitle}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             onError={() => setImageError(true)}
@@ -260,7 +264,8 @@ export function ContentCard({ item, layout = 'standard', priority = false }: Con
           <div className="w-full aspect-[16/10] relative overflow-hidden bg-slate-100 block">
             <Image
               src={displayImage}
-              alt={item.title}
+              alt={imageTitle}
+              title={imageTitle}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               priority={priority}

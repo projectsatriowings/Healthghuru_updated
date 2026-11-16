@@ -16,8 +16,22 @@ import { getSafeImageUrl } from '@/lib/utils';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Doctor Interviews & Clinical Webinars | HealthGhuru',
-  description: 'Watch in-depth video interviews and read clinical transcripts with leading cardiologists, oncologists, and pediatric specialists.',
+  title: 'Doctor Interviews & Webinars',
+  description: 'Watch video interviews and read clinical transcripts with leading cardiologists, oncologists, and specialists.',
+  alternates: {
+    canonical: '/interviews',
+  },
+  openGraph: {
+    title: 'Doctor Interviews & Webinars',
+    description: 'Watch video interviews and read clinical transcripts with leading cardiologists, oncologists, and specialists.',
+    url: 'https://healthghuru.com/interviews',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Doctor Interviews & Webinars',
+    description: 'Watch video interviews and read clinical transcripts with leading cardiologists, oncologists, and specialists.',
+  },
 };
 
 export default async function InterviewsPage() {

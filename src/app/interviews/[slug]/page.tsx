@@ -24,22 +24,59 @@ export async function generateMetadata({
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
+  const canonicalUrl = `https://healthghuru.com/interviews/${params.slug}`;
   const items = await sql`
-    SELECT title, summary FROM doctor_interviews WHERE slug = ${params.slug} LIMIT 1
+    SELECT di.title, di.summary, d.photo_url 
+    FROM doctor_interviews di
+    LEFT JOIN doctors d ON di.doctor_id = d.id
+    WHERE di.slug = ${params.slug} LIMIT 1
   `;
   if (items.length > 0) {
+    const rawTitle = items[0].title.replace(/\s*\|\s*HealthGhuru.*$/i, '').trim();
+    const seoTitle = rawTitle.length > 42 ? `${rawTitle.slice(0, 39).trim()}...` : rawTitle;
+    let desc = (items[0].summary || rawTitle).trim();
+    if (desc.length > 155) desc = `${desc.slice(0, 150).trim()}...`;
+    else if (desc.length < 70) desc = `${desc}. Watch verified doctor interview and clinical discussion on HealthGhuru.`;
+
+    const img = items[0].photo_url || 'https://healthghuru.com/images/default_doctor.jpg';
+
     return {
-      title: `${items[0].title} | HealthGhuru Doctor Interview`,
-      description: items[0].summary,
+      title: seoTitle,
+      description: desc,
       alternates: {
         canonical: `/interviews/${params.slug}`,
+      },
+      openGraph: {
+        title: rawTitle,
+        description: desc,
+        url: canonicalUrl,
+        type: 'video.other',
+        images: [{ url: img }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: rawTitle,
+        description: desc,
+        images: [img],
       },
     };
   }
   return {
-    title: 'Doctor Interview | HealthGhuru',
+    title: 'Doctor Interview',
+    description: 'Watch in-depth medical interviews and clinical discussions with leading doctors on HealthGhuru.',
     alternates: {
       canonical: `/interviews/${params.slug}`,
+    },
+    openGraph: {
+      title: 'Doctor Interview',
+      description: 'Watch in-depth medical interviews and clinical discussions with leading doctors on HealthGhuru.',
+      url: canonicalUrl,
+      type: 'video.other',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Doctor Interview',
+      description: 'Watch in-depth medical interviews and clinical discussions with leading doctors on HealthGhuru.',
     },
   };
 }

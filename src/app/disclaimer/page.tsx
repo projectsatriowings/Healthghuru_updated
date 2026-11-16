@@ -18,9 +18,25 @@ import { ScrollReveal } from '@/components/ui/ScrollReveal';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Medical Disclaimer | HealthGhuru — Evidence-Based Intelligence',
+  title: 'Medical Disclaimer & Safety',
   description:
-    'Crucial medical disclaimer regarding educational content, doctor-patient relationships, and emergency healthcare contacts.',
+    'Crucial medical disclaimer regarding educational content, doctor-patient advice, and emergency contacts.',
+  alternates: {
+    canonical: '/disclaimer',
+  },
+  openGraph: {
+    title: 'Medical Disclaimer & Safety',
+    description:
+      'Crucial medical disclaimer regarding educational content, doctor-patient advice, and emergency contacts.',
+    url: 'https://healthghuru.com/disclaimer',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Medical Disclaimer & Safety',
+    description:
+      'Crucial medical disclaimer regarding educational content, doctor-patient advice, and emergency contacts.',
+  },
 };
 
 export default async function DisclaimerPage() {

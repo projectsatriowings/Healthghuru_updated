@@ -198,6 +198,7 @@ function OnboardingWizard() {
         </Link>
 
         {/* Wizard Step Progress */}
+        <h1 className="sr-only">HealthGhuru Personalization Setup</h1>
         <div className="flex items-center gap-3">
           <span className="text-xs font-heading font-bold text-text-secondary">
             Step {step} of 3
@@ -245,9 +246,9 @@ function OnboardingWizard() {
                   <span className="text-xs font-heading font-bold uppercase tracking-wider text-primary flex items-center gap-1.5 mb-1.5">
                     <Heart size={14} className="fill-primary" /> Personalize Your Experience
                   </span>
-                  <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl text-dark">
+                  <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl text-dark">
                     What health topics are you interested in?
-                  </h1>
+                  </h2>
                   <p className="text-xs sm:text-sm text-text-secondary mt-1 max-w-2xl">
                     Select the wellness areas you want HealthGuru to prioritize. You can select multiple topics and modify them anytime.
                   </p>
@@ -346,9 +347,9 @@ function OnboardingWizard() {
                   <span className="text-xs font-heading font-bold uppercase tracking-wider text-primary flex items-center gap-1.5 mb-1.5">
                     <Layers size={14} className="text-primary" /> Delivery & Format
                   </span>
-                  <h1 className="font-display text-2xl sm:text-3xl lg:text-4xl text-dark">
+                  <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl text-dark">
                     How do you prefer to consume wellness content?
-                  </h1>
+                  </h2>
                   <p className="text-xs sm:text-sm text-text-secondary mt-1 max-w-2xl">
                     Choose your favorite formats. We will tune your dashboard and recommendations to prioritize the mediums you enjoy most.
                   </p>
@@ -441,9 +442,9 @@ function OnboardingWizard() {
                 </div>
 
                 <div className="max-w-md mx-auto space-y-2">
-                  <h1 className="font-display text-3xl sm:text-4xl text-dark">
+                  <h2 className="font-display text-3xl sm:text-4xl text-dark">
                     Your Personalized Feed is Ready!
-                  </h1>
+                  </h2>
                   <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
                     HealthGuru has configured your recommendation engine. Here are your active preferences:
                   </p>

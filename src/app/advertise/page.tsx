@@ -1,8 +1,28 @@
+import type { Metadata } from 'next';
 import { sql } from '@/lib/db';
 import { CampaignManagerPage } from './CampaignManagerPage';
 import { AdSlotPricing } from '@/lib/types/advertisement';
 
 export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Advertise With HealthGhuru',
+  description: 'Promote your healthcare brand, hospital, or wellness product to millions of health-conscious readers.',
+  alternates: {
+    canonical: '/advertise',
+  },
+  openGraph: {
+    title: 'Advertise With HealthGhuru',
+    description: 'Promote your healthcare brand, hospital, or wellness product to millions of health-conscious readers.',
+    url: 'https://healthghuru.com/advertise',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Advertise With HealthGhuru',
+    description: 'Promote your healthcare brand, hospital, or wellness product to millions of health-conscious readers.',
+  },
+};
 
 export default async function AdvertisePage() {
   // Fetch pricing from DB (fallback to defaults if table missing)

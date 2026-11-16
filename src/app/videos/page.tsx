@@ -11,8 +11,22 @@ import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Health Videos & Wellness Shorts | HealthGhuru',
-  description: 'Watch doctor-led wellness breakdowns, fitness routines, nutrition science explainers, and quick health reels from certified channels.',
+  title: 'Health Videos & Medical Shorts',
+  description: 'Watch doctor-led wellness breakdowns, fitness routines, and nutrition explainers from certified channels.',
+  alternates: {
+    canonical: '/videos',
+  },
+  openGraph: {
+    title: 'Health Videos & Medical Shorts',
+    description: 'Watch doctor-led wellness breakdowns, fitness routines, and nutrition explainers from certified channels.',
+    url: 'https://healthghuru.com/videos',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Health Videos & Medical Shorts',
+    description: 'Watch doctor-led wellness breakdowns, fitness routines, and nutrition explainers from certified channels.',
+  },
 };
 
 function YouTubeShortsIcon({ size = 16, className = '' }: { size?: number; className?: string }) {
@@ -101,6 +115,7 @@ export default async function VideosPage({
         <ScrollReveal>
           <div className="w-full flex flex-col items-center justify-center text-center border-b border-border pb-6">
             <SectionHeader
+              as="h1"
               eyebrow="Visual Wellness Intelligence"
               title="Health Videos & Shorts"
               subtitle="Explore official HealthGhuru medical explainers, home remedies, and quick wellness shorts."

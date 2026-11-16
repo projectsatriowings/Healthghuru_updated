@@ -14,14 +14,24 @@ import { SponsoredPageWrapper } from '@/components/sponsored/SponsoredPageWrappe
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Sponsored Healthcare Articles & Clinical Video Promotion | HealthGhuru',
+  title: 'Sponsored Healthcare Articles',
   description:
-    'Promote your hospital, clinical milestones, doctor breakthroughs, diagnostic advancements, or healthcare brand to millions of engaged health-conscious readers across India.',
+    'Promote your hospital, clinical milestones, and healthcare brand to millions of health-conscious readers.',
+  alternates: {
+    canonical: '/sponsored-articles',
+  },
   openGraph: {
-    title: 'Sponsored Articles & Healthcare Promotion Packages | HealthGhuru',
+    title: 'Sponsored Healthcare Articles',
     description:
-      'Explore official commercial rates, combo marketing bundles, video promotions, and published partner stories on HealthGhuru.',
+      'Promote your hospital, clinical milestones, and healthcare brand to millions of health-conscious readers.',
+    url: 'https://healthghuru.com/sponsored-articles',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Sponsored Healthcare Articles',
+    description:
+      'Promote your hospital, clinical milestones, and healthcare brand to millions of health-conscious readers.',
   },
   robots: {
     index: true,

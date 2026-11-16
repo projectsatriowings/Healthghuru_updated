@@ -32,6 +32,46 @@ export async function generateMetadata({
   params: { slug: string };
 }): Promise<Metadata> {
   const cleanSlug = decodeURIComponent(params.slug || '').trim().toLowerCase();
+  const canonicalUrl = `https://healthghuru.com/article/${cleanSlug}`;
+
+  const formatMeta = (rawTitle: string, rawDesc?: string, rawImg?: string, pubTime?: string): Metadata => {
+    const unbranded = rawTitle.replace(/\s*\|\s*HealthGhuru.*$/i, '').trim();
+    // Keep page title <= 45 chars so template "%s | HealthGhuru" stays <= 60 characters
+    const seoTitle = unbranded.length > 45 ? `${unbranded.slice(0, 42).trim()}...` : unbranded;
+    
+    let desc = (rawDesc || unbranded).trim();
+    if (desc.length > 155) {
+      desc = `${desc.slice(0, 150).trim()}...`;
+    } else if (desc.length < 70) {
+      desc = `${desc}. Read evidence-based medical reporting on HealthGhuru.`;
+      if (desc.length > 155) desc = desc.slice(0, 152) + '...';
+    }
+
+    const img = rawImg || 'https://healthghuru.com/images/default_article.jpg';
+
+    return {
+      title: seoTitle,
+      description: desc,
+      alternates: {
+        canonical: `/article/${cleanSlug}`,
+      },
+      openGraph: {
+        title: unbranded,
+        description: desc,
+        url: canonicalUrl,
+        type: 'article',
+        publishedTime: pubTime,
+        images: [{ url: img }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: unbranded,
+        description: desc,
+        images: [img],
+      },
+    };
+  };
+
   try {
     const items = await sql`
       SELECT title, excerpt, description, image_url, category, author_name, published_at
@@ -42,36 +82,17 @@ export async function generateMetadata({
 
     if (items.length > 0) {
       const item = items[0];
-      return {
-        title: `${item.title} | HealthGhuru News`,
-        description: item.excerpt || item.description,
-        alternates: {
-          canonical: `/article/${cleanSlug}`,
-        },
-        openGraph: {
-          title: item.title,
-          description: item.excerpt,
-          images: item.image_url ? [{ url: item.image_url }] : [],
-          type: 'article',
-          publishedTime: item.published_at,
-        },
-      };
+      return formatMeta(item.title, item.excerpt || item.description, item.image_url, item.published_at);
     }
 
     // Check fallback articles table
     const legacy = await sql`
-      SELECT title, excerpt, hero_image_url FROM articles 
+      SELECT title, excerpt, hero_image_url, publish_date FROM articles 
       WHERE LOWER(slug) = ${cleanSlug} OR slug = ${params.slug} 
       LIMIT 1
     `;
     if (legacy.length > 0) {
-      return {
-        title: `${legacy[0].title} | HealthGhuru`,
-        description: legacy[0].excerpt,
-        alternates: {
-          canonical: `/article/${cleanSlug}`,
-        },
-      };
+      return formatMeta(legacy[0].title, legacy[0].excerpt, legacy[0].hero_image_url, legacy[0].publish_date);
     }
   } catch (err) {
     console.error('Error fetching metadata from db:', err);
@@ -80,26 +101,25 @@ export async function generateMetadata({
   // Check fallback registry
   const fb = getFallbackArticle(cleanSlug);
   if (fb) {
-    return {
-      title: `${fb.title} | HealthGhuru News`,
-      description: fb.excerpt || fb.description,
-      alternates: {
-        canonical: `/article/${cleanSlug}`,
-      },
-      openGraph: {
-        title: fb.title,
-        description: fb.excerpt,
-        images: fb.image_url ? [{ url: fb.image_url }] : [],
-        type: 'article',
-        publishedTime: fb.published_at,
-      },
-    };
+    return formatMeta(fb.title, fb.excerpt || fb.description, fb.image_url, fb.published_at);
   }
 
   return {
-    title: 'Health News Article | HealthGhuru',
+    title: 'Health News Article',
+    description: 'Evidence-based health news and clinical medical reports from verified healthcare experts.',
     alternates: {
       canonical: `/article/${cleanSlug}`,
+    },
+    openGraph: {
+      title: 'Health News Article',
+      description: 'Evidence-based health news and clinical medical reports from verified healthcare experts.',
+      url: canonicalUrl,
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Health News Article',
+      description: 'Evidence-based health news and clinical medical reports from verified healthcare experts.',
     },
   };
 }

@@ -6,8 +6,22 @@ import { Button } from "@/components/ui/Button";
 import { sql } from "@/lib/db";
 
 export const metadata: Metadata = {
-  title: "Blog | HealthGhuru — Wellness Insights",
-  description: "Expert insights on Nutrition, Fitness, Sleep, and Mental Health.",
+  title: 'Wellness Blog & Insights',
+  description: 'Explore doctor-authored articles and expert wellness insights on nutrition, sleep, and fitness.',
+  alternates: {
+    canonical: '/blog',
+  },
+  openGraph: {
+    title: 'Wellness Blog & Insights',
+    description: 'Explore doctor-authored articles and expert wellness insights on nutrition, sleep, and fitness.',
+    url: 'https://healthghuru.com/blog',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Wellness Blog & Insights',
+    description: 'Explore doctor-authored articles and expert wellness insights on nutrition, sleep, and fitness.',
+  },
 };
 
 export const dynamic = 'force-dynamic';

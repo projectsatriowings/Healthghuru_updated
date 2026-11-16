@@ -6,8 +6,15 @@ import { HealthDisclaimer } from '@/components/media/HealthDisclaimer';
 import { sql } from '@/lib/db';
 
 export const metadata: Metadata = {
-  title: 'Search Health Topics | HealthGhuru — Unified Medical Search',
+  title: 'Search Health Topics',
   description: 'Search across thousands of curated health articles, breaking news, medical videos, and research bulletins.',
+  robots: {
+    index: false,
+    follow: true,
+  },
+  alternates: {
+    canonical: '/search',
+  },
 };
 
 export default async function SearchPage({

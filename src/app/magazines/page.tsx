@@ -11,8 +11,22 @@ import { formatMonthYear, getSafeImageUrl } from '@/lib/utils';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Health Magazines & Periodicals | HealthGhuru — Medical Digests & Publications',
-  description: 'Curated periodicals, monthly health digests, clinical bulletins, and institutional health magazines.',
+  title: 'Health Magazines & Digests',
+  description: 'Curated monthly health digests, clinical bulletins, and institutional wellness magazines.',
+  alternates: {
+    canonical: '/magazines',
+  },
+  openGraph: {
+    title: 'Health Magazines & Digests',
+    description: 'Curated monthly health digests, clinical bulletins, and institutional wellness magazines.',
+    url: 'https://healthghuru.com/magazines',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Health Magazines & Digests',
+    description: 'Curated monthly health digests, clinical bulletins, and institutional wellness magazines.',
+  },
 };
 
 export default async function MagazinesPage() {

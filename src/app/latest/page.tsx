@@ -10,8 +10,22 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export const metadata: Metadata = {
-  title: 'Latest Health News & Clinical Feeds | HealthGhuru',
-  description: 'Real-time chronological timeline of the newest health news, clinical breakthroughs, research discoveries, and verified wellness updates.',
+  title: 'Real-Time Health News Feed',
+  description: 'Real-time timeline of health news, clinical breakthroughs, and verified wellness updates.',
+  alternates: {
+    canonical: '/latest',
+  },
+  openGraph: {
+    title: 'Real-Time Health News Feed',
+    description: 'Real-time timeline of health news, clinical breakthroughs, and verified wellness updates.',
+    url: 'https://healthghuru.com/latest',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Real-Time Health News Feed',
+    description: 'Real-time timeline of health news, clinical breakthroughs, and verified wellness updates.',
+  },
 };
 
 export default async function LatestFeedPage() {

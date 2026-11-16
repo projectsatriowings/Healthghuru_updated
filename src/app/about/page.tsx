@@ -12,8 +12,22 @@ import { sql } from "@/lib/db";
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: "About Us | HealthGhuru — Evidence-Based Health Intelligence",
-  description: "Learn more about our mission, medical review standards, and accredited syndication sources.",
+  title: 'About Our Mission & Standards',
+  description: 'Learn more about our mission, medical review standards, and accredited syndication sources.',
+  alternates: {
+    canonical: '/about',
+  },
+  openGraph: {
+    title: 'About Our Mission & Standards',
+    description: 'Learn more about our mission, medical review standards, and accredited syndication sources.',
+    url: 'https://healthghuru.com/about',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About Our Mission & Standards',
+    description: 'Learn more about our mission, medical review standards, and accredited syndication sources.',
+  },
 };
 
 export default async function AboutPage() {

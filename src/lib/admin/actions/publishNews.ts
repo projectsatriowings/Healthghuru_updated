@@ -72,10 +72,12 @@ export async function publishNews(payload: NewsPublishPayload) {
   
   if (!baseSlug || baseSlug.replace(/-/g, '').length === 0) {
     baseSlug = `news-${Date.now()}`;
+  } else if (baseSlug.length > 70) {
+    baseSlug = baseSlug.slice(0, 70).replace(/-[^-]*$/, '');
   }
 
   const uniqueSuffix = Math.floor(1000 + Math.random() * 9000);
-  const slug = `${baseSlug}-${uniqueSuffix}`.slice(0, 240);
+  const slug = `${baseSlug}-${uniqueSuffix}`;
 
   const wordCount = (content || '').split(/\s+/).filter(Boolean).length;
   const readTime = Math.max(1, Math.ceil(wordCount / 180));

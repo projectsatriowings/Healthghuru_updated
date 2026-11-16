@@ -21,6 +21,22 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(canonicalUrl, 301);
   }
 
+  // 2. URL Normalization: Redirect uppercase URLs and URLs with spaces to lowercase hyphenated URLs
+  const rawPath = nextUrl.pathname;
+  if (
+    !rawPath.startsWith('/api') &&
+    !rawPath.startsWith('/_next') &&
+    !rawPath.startsWith('/admin') &&
+    (rawPath !== rawPath.toLowerCase() || rawPath.includes(' ') || rawPath.includes('%20'))
+  ) {
+    const cleanPath = rawPath.toLowerCase().replace(/[\s%20]+/g, '-');
+    const redirectUrl = new URL(
+      `${cleanPath}${nextUrl.search}`,
+      `https://${host.replace(/^www\./i, '')}`
+    );
+    return NextResponse.redirect(redirectUrl, 301);
+  }
+
   // Check if request is coming via admin subdomain (e.g. admin.healthghuru.com)
   const isAdminSubdomain = host.startsWith('admin.');
   const pathname = nextUrl.pathname;

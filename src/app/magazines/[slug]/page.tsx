@@ -42,6 +42,7 @@ const MONTH_NAMES = [
 
 export async function generateMetadata({ params }: MagazineSlugProps): Promise<Metadata> {
   const { slug } = params;
+  const canonicalUrl = `https://healthghuru.com/magazines/${slug}`;
   const items = await sql`
     SELECT title, excerpt, description, image_url
     FROM content_items
@@ -51,25 +52,52 @@ export async function generateMetadata({ params }: MagazineSlugProps): Promise<M
 
   if (items.length === 0) {
     return {
-      title: 'Magazine Issue | HealthGhuru',
+      title: 'Magazine Issue',
       description: 'Official digital health magazine edition from HealthGhuru.',
       alternates: {
         canonical: `/magazines/${slug}`,
+      },
+      openGraph: {
+        title: 'Magazine Issue',
+        description: 'Official digital health magazine edition from HealthGhuru.',
+        url: canonicalUrl,
+        type: 'article',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Magazine Issue',
+        description: 'Official digital health magazine edition from HealthGhuru.',
       },
     };
   }
 
   const mag = items[0];
+  const rawTitle = mag.title.replace(/\s*\|\s*HealthGhuru.*$/i, '').trim();
+  const seoTitle = rawTitle.length > 42 ? `${rawTitle.slice(0, 39).trim()}...` : rawTitle;
+  let desc = (mag.excerpt || mag.description || 'Verified evidence-based clinical and lifestyle reports.').trim();
+  if (desc.length > 155) desc = `${desc.slice(0, 150).trim()}...`;
+  else if (desc.length < 70) desc = `${desc}. Read official health magazine issue on HealthGhuru.`;
+
+  const img = mag.image_url || 'https://healthghuru.com/images/default_magazine.jpg';
+
   return {
-    title: `${mag.title} | HealthGhuru Digital Periodical`,
-    description: mag.excerpt || mag.description || 'Verified evidence-based clinical and lifestyle reports.',
+    title: seoTitle,
+    description: desc,
     alternates: {
       canonical: `/magazines/${slug}`,
     },
     openGraph: {
-      title: mag.title,
-      description: mag.excerpt || mag.description,
-      images: mag.image_url ? [mag.image_url] : [],
+      title: rawTitle,
+      description: desc,
+      url: canonicalUrl,
+      type: 'article',
+      images: [{ url: img }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: rawTitle,
+      description: desc,
+      images: [img],
     },
   };
 }

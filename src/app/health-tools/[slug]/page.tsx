@@ -30,20 +30,39 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const tool = HEALTH_TOOLS.find((t) => t.slug === params.slug);
+  const canonicalUrl = `https://healthghuru.com/health-tools/${params.slug}`;
+
   if (!tool) {
     return {
-      title: 'Health Tool Not Found | HealthGuru',
+      title: 'Health Tool Not Found',
       alternates: {
         canonical: `/health-tools/${params.slug}`,
       },
     };
   }
 
+  const rawTitle = tool.name.replace(/\s*\|\s*HealthGhuru.*$/i, '').trim();
+  const seoTitle = `${rawTitle} Calculator`;
+  let desc = tool.description.trim();
+  if (desc.length > 155) desc = `${desc.slice(0, 150).trim()}...`;
+  else if (desc.length < 70) desc = `${desc}. Free clinical calculator and guidance on HealthGhuru.`;
+
   return {
-    title: `${tool.name} | Health Tools | HealthGuru`,
-    description: tool.description,
+    title: seoTitle,
+    description: desc,
     alternates: {
       canonical: `/health-tools/${params.slug}`,
+    },
+    openGraph: {
+      title: seoTitle,
+      description: desc,
+      url: canonicalUrl,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: seoTitle,
+      description: desc,
     },
   };
 }

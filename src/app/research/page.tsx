@@ -17,8 +17,22 @@ import { BreakingNewsTicker } from '@/components/media/BreakingNewsTicker';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Medical Research & Clinical Discoveries | HealthGhuru',
-  description: 'Evidence-based summaries of peer-reviewed clinical trials from NEJM, Lancet, JAMA, NIH, and global oncology councils.',
+  title: 'Medical Research & Clinical Trials',
+  description: 'Summaries of peer-reviewed clinical trials from NEJM, Lancet, JAMA, NIH, and global medical journals.',
+  alternates: {
+    canonical: '/research',
+  },
+  openGraph: {
+    title: 'Medical Research & Clinical Trials',
+    description: 'Summaries of peer-reviewed clinical trials from NEJM, Lancet, JAMA, NIH, and global medical journals.',
+    url: 'https://healthghuru.com/research',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Medical Research & Clinical Trials',
+    description: 'Summaries of peer-reviewed clinical trials from NEJM, Lancet, JAMA, NIH, and global medical journals.',
+  },
 };
 
 export default async function ResearchPage() {

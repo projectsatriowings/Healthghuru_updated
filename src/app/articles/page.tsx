@@ -10,8 +10,22 @@ import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Health Articles | HealthGhuru — Expert Insights & In-Depth Wellness Guides',
-  description: 'Evidence-based articles on Nutrition, Fitness, Mental Health, Sleep, and Preventive Medicine by medical writers and reputable health institutions.',
+  title: 'Health & Wellness Articles',
+  description: 'Explore evidence-based articles on nutrition, fitness, sleep, and mental health by medical experts.',
+  alternates: {
+    canonical: '/articles',
+  },
+  openGraph: {
+    title: 'Health & Wellness Articles',
+    description: 'Explore evidence-based articles on nutrition, fitness, sleep, and mental health by medical experts.',
+    url: 'https://healthghuru.com/articles',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Health & Wellness Articles',
+    description: 'Explore evidence-based articles on nutrition, fitness, sleep, and mental health by medical experts.',
+  },
 };
 
 export default async function ArticlesPage({
@@ -67,6 +81,7 @@ export default async function ArticlesPage({
         <ScrollReveal>
           <div className="w-full flex flex-col items-center justify-center text-center border-b border-border pb-6 space-y-5">
             <SectionHeader
+              as="h1"
               eyebrow="Editorial & Syndicated"
               title="Health & Wellness Articles"
               subtitle="Explore original guides by HealthGhuru alongside in-depth analyses from accredited medical publishers."

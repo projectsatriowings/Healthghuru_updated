@@ -448,7 +448,7 @@ function LoginForm() {
                             }}
                             className="inline-flex items-center gap-1.5 font-bold text-xs text-primary underline hover:text-primary-dark"
                           >
-                            Click here to proceed to password reset &rarr;
+                            Proceed to password reset &rarr;
                           </button>
                         </div>
                       )}

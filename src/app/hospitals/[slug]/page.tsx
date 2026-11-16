@@ -33,25 +33,60 @@ export async function generateMetadata({
   params: { slug: string };
 }): Promise<Metadata> {
   const cleanSlug = decodeURIComponent(params.slug || '').trim().toLowerCase();
+  const canonicalUrl = `https://healthghuru.com/hospitals/${cleanSlug}`;
+
   const items = await sql`
-    SELECT name, about, city, state FROM hospitals 
+    SELECT name, about, city, state, photo_url FROM hospitals 
     WHERE LOWER(slug) = ${cleanSlug} OR slug = ${params.slug} 
     LIMIT 1
   `;
   if (items.length > 0) {
     const hosp = items[0];
+    const rawName = hosp.name.replace(/\s*\|\s*HealthGhuru.*$/i, '').trim();
+    const seoTitle = rawName.length > 40 ? `${rawName.slice(0, 37).trim()}...` : `${rawName} Medical Center`;
+    let desc = (hosp.about || `Explore medical specializations, key facilities, and verified doctors at ${rawName} in ${hosp.city}, ${hosp.state}.`).trim();
+    if (desc.length > 155) desc = `${desc.slice(0, 150).trim()}...`;
+    else if (desc.length < 70) desc = `${desc} Discover top doctors and departments on HealthGhuru.`;
+
+    const img = hosp.photo_url || 'https://healthghuru.com/images/default_hospital.jpg';
+
     return {
-      title: `${hosp.name} — Accredited Medical Center | HealthGhuru`,
-      description: hosp.about || `Explore medical specializations, key facilities, and verified doctors at ${hosp.name} in ${hosp.city}, ${hosp.state}.`,
+      title: seoTitle,
+      description: desc,
       alternates: {
         canonical: `/hospitals/${cleanSlug}`,
+      },
+      openGraph: {
+        title: rawName,
+        description: desc,
+        url: canonicalUrl,
+        type: 'website',
+        images: [{ url: img }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: rawName,
+        description: desc,
+        images: [img],
       },
     };
   }
   return {
-    title: 'Hospital Details | HealthGhuru',
+    title: 'Hospital Profile',
+    description: 'Explore premier hospitals, medical specializations, and verified doctors on HealthGhuru.',
     alternates: {
       canonical: `/hospitals/${cleanSlug}`,
+    },
+    openGraph: {
+      title: 'Hospital Profile',
+      description: 'Explore premier hospitals, medical specializations, and verified doctors on HealthGhuru.',
+      url: canonicalUrl,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Hospital Profile',
+      description: 'Explore premier hospitals, medical specializations, and verified doctors on HealthGhuru.',
     },
   };
 }

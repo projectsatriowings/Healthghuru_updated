@@ -18,8 +18,22 @@ import { getSafeImageUrl } from '@/lib/utils';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Accredited Hospitals & Healthcare Centers | HealthGhuru',
-  description: 'Explore premier tertiary hospitals, comprehensive cancer centers, and cardiac care institutes affiliated with HealthGhuru.',
+  title: 'Accredited Hospitals & Centers',
+  description: 'Explore premier tertiary hospitals, cancer centers, and cardiac care institutes affiliated with HealthGhuru.',
+  alternates: {
+    canonical: '/hospitals',
+  },
+  openGraph: {
+    title: 'Accredited Hospitals & Centers',
+    description: 'Explore premier tertiary hospitals, cancer centers, and cardiac care institutes affiliated with HealthGhuru.',
+    url: 'https://healthghuru.com/hospitals',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Accredited Hospitals & Centers',
+    description: 'Explore premier tertiary hospitals, cancer centers, and cardiac care institutes affiliated with HealthGhuru.',
+  },
 };
 
 export default async function HospitalsPage() {

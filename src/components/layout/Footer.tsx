@@ -247,10 +247,10 @@ export default function Footer() {
           <p>© {new Date().getFullYear()} HealthGhuru. All Rights Reserved.</p>
 
           <div className="flex items-center gap-4 sm:gap-6 flex-wrap justify-center font-medium">
-            <Link href="/privacy-policy" className="hover:text-slate-300 transition-colors">
+            <Link href="/privacy" className="hover:text-slate-300 transition-colors">
               Privacy Policy
             </Link>
-            <Link href="/terms-of-service" className="hover:text-slate-300 transition-colors">
+            <Link href="/terms" className="hover:text-slate-300 transition-colors">
               Terms &amp; Conditions
             </Link>
             <Link href="/disclaimer" className="hover:text-slate-300 transition-colors">

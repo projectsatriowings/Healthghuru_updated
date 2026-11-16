@@ -3,8 +3,22 @@ import { ContactClient } from './ContactClient';
 import { HealthDisclaimer } from '@/components/media/HealthDisclaimer';
 
 export const metadata: Metadata = {
-  title: 'Contact Us | HealthGhuru — Reach Out for Medical Queries & Sponsorships',
-  description: 'Get in touch with the HealthGhuru team for inquiries, health feedback, advertisement requests, or clinical editorial corrections.',
+  title: 'Contact HealthGhuru Team',
+  description: 'Get in touch with the HealthGhuru team for inquiries, health feedback, and editorial questions.',
+  alternates: {
+    canonical: '/contact',
+  },
+  openGraph: {
+    title: 'Contact HealthGhuru Team',
+    description: 'Get in touch with the HealthGhuru team for inquiries, health feedback, and editorial questions.',
+    url: 'https://healthghuru.com/contact',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contact HealthGhuru Team',
+    description: 'Get in touch with the HealthGhuru team for inquiries, health feedback, and editorial questions.',
+  },
 };
 
 export default function ContactPage() {

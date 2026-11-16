@@ -8,8 +8,22 @@ import { HealthDisclaimer } from '@/components/media/HealthDisclaimer';
 import { Flame } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Trending Health Topics | HealthGhuru — Most Engaging Stories',
+  title: 'Trending Health Topics',
   description: 'Trending health discussions, high-engagement wellness breakthroughs, and popular health guides.',
+  alternates: {
+    canonical: '/trending',
+  },
+  openGraph: {
+    title: 'Trending Health Topics',
+    description: 'Trending health discussions, high-engagement wellness breakthroughs, and popular health guides.',
+    url: 'https://healthghuru.com/trending',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Trending Health Topics',
+    description: 'Trending health discussions, high-engagement wellness breakthroughs, and popular health guides.',
+  },
 };
 
 export const dynamic = 'force-dynamic';

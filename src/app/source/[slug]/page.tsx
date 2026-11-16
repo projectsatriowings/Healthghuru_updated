@@ -14,9 +14,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const cleanSlug = decodeURIComponent(params.slug || '').trim().toLowerCase();
   const rawWords = cleanSlug.replace(/[^a-z0-9]+/g, ' ').trim();
   const firstWord = rawWords.split(' ')[0] || '';
+  const canonicalUrl = `https://healthghuru.com/source/${cleanSlug}`;
 
   let sources = await sql`
-    SELECT name FROM content_sources 
+    SELECT name, description FROM content_sources 
     WHERE LOWER(REPLACE(name, ' ', '-')) = ${cleanSlug}
        OR LOWER(slug) = ${cleanSlug}
     LIMIT 1
@@ -24,7 +25,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
   if (sources.length === 0 && firstWord.length > 2) {
     sources = await sql`
-      SELECT name FROM content_sources
+      SELECT name, description FROM content_sources
       WHERE LOWER(name) LIKE ${`%${rawWords}%`}
          OR LOWER(name) LIKE ${`%${firstWord}%`}
       LIMIT 1
@@ -33,18 +34,45 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
   if (sources.length === 0) {
     return {
-      title: 'Source Archive | HealthGhuru',
+      title: 'Medical Content Source',
+      description: 'Syndicated health news and evidence-based articles from accredited medical sources.',
       alternates: {
         canonical: `/source/${cleanSlug}`,
+      },
+      openGraph: {
+        title: 'Medical Content Source',
+        description: 'Syndicated health news and evidence-based articles from accredited medical sources.',
+        url: canonicalUrl,
+        type: 'website',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Medical Content Source',
+        description: 'Syndicated health news and evidence-based articles from accredited medical sources.',
       },
     };
   }
 
+  const rawName = sources[0].name.replace(/\s*\|\s*HealthGhuru.*$/i, '').trim();
+  const seoTitle = `${rawName} Medical Source`;
+  const desc = `Syndicated health news, research, and evidence-based articles from ${rawName} on HealthGhuru.`;
+
   return {
-    title: `${sources[0].name} | HealthGhuru Content Sources`,
-    description: `Syndicated health news and evidence-based articles from ${sources[0].name}.`,
+    title: seoTitle,
+    description: desc,
     alternates: {
       canonical: `/source/${cleanSlug}`,
+    },
+    openGraph: {
+      title: seoTitle,
+      description: desc,
+      url: canonicalUrl,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: seoTitle,
+      description: desc,
     },
   };
 }

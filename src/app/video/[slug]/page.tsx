@@ -54,22 +54,45 @@ function YoutubeIcon({ size = 14, className = '' }: { size?: number; className?:
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const slug = decodeURIComponent(params.slug);
   const items = await sql`
-    SELECT title, excerpt FROM content_items WHERE (slug = ${params.slug} OR slug = ${slug}) AND content_type = 'video'
+    SELECT title, excerpt, image_url, published_at FROM content_items WHERE (slug = ${params.slug} OR slug = ${slug}) AND content_type = 'video'
   `;
+  const canonicalUrl = `https://healthghuru.com/video/${slug}`;
+
   if (items.length === 0) {
     return {
-      title: 'Video Not Found | HealthGhuru',
+      title: 'Video Not Found',
       alternates: {
         canonical: `/video/${slug}`,
       },
     };
   }
 
+  const rawTitle = items[0].title.replace(/\s*\|\s*HealthGhuru.*$/i, '').trim();
+  const seoTitle = rawTitle.length > 45 ? `${rawTitle.slice(0, 42).trim()}...` : rawTitle;
+  let desc = (items[0].excerpt || rawTitle).trim();
+  if (desc.length > 155) desc = `${desc.slice(0, 150).trim()}...`;
+  else if (desc.length < 70) desc = `${desc}. Watch certified health and wellness video on HealthGhuru.`;
+
+  const img = items[0].image_url || 'https://healthghuru.com/images/default_video.jpg';
+
   return {
-    title: `${items[0].title} | HealthGhuru Videos`,
-    description: items[0].excerpt,
+    title: seoTitle,
+    description: desc,
     alternates: {
       canonical: `/video/${slug}`,
+    },
+    openGraph: {
+      title: rawTitle,
+      description: desc,
+      url: canonicalUrl,
+      type: 'video.other',
+      images: [{ url: img }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: rawTitle,
+      description: desc,
+      images: [img],
     },
   };
 }

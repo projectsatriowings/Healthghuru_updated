@@ -117,14 +117,29 @@ export async function generateMetadata({
     LIMIT 1
   `;
   const name = cats.length > 0 ? cats[0].name : cleanSlug.replace(/-/g, ' ');
+  const formattedName = name.charAt(0).toUpperCase() + name.slice(1);
+  const title = `${formattedName} News & Clinical Updates`;
+  const desc = cats.length > 0 && cats[0].description
+    ? cats[0].description
+    : `Explore verified clinical breakthroughs, treatments, and physician insights in ${name}.`;
+  const canonicalUrl = `https://healthghuru.com/category/${cleanSlug}`;
+
   return {
-    title: `${name.toUpperCase()} News, Clinical Research & Updates | HealthGhuru`,
-    description:
-      cats.length > 0
-        ? cats[0].description
-        : `Latest clinical breakthroughs, treatments, and physician insights in ${name}.`,
+    title,
+    description: desc,
     alternates: {
       canonical: `/category/${cleanSlug}`,
+    },
+    openGraph: {
+      title,
+      description: desc,
+      url: canonicalUrl,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: desc,
     },
   };
 }
